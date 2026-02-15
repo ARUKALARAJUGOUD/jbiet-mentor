@@ -123,14 +123,176 @@ exports.register = async (req, res) => {
 
 };
 
+// exports.login = async (req, res) => {
+//   console.log("API HIT : /login");
 
+//   try {
+//     let { userId, password } = req.body;
+
+//     if (!userId || !password) {
+//       return res.status(400).json({ message: "All fields are required" });
+//     }
+
+//     userId = userId.trim().toUpperCase();
+//     password = password.trim();
+
+//     const user = await User.findOne({
+//       $or: [{ rollNo: userId }, { facultyId: userId }],
+//     }).select("+password");
+
+//     if (!user || !user.password) {
+//       return res.status(401).json({ message: "Invalid ID or password" });
+//     }
+
+//     const match = await bcrypt.compare(password, user.password);
+//     if (!match) {
+//       return res.status(401).json({ message: "Invalid ID or password" });
+//     }
+
+//     const at = accessToken(user); // make sure JWT_SECRET is set
+//     const rt = refreshToken(user);
+
+//     res.cookie("refreshToken", rt, {
+//       httpOnly: true,
+//       sameSite: "lax",
+//       secure: false, // true if using https
+//     });
+
+//     res.json({
+//       accessToken: at,
+//       user: {
+//         id: user._id,
+//         name: user.name,
+//         role: user.role,
+//         rollNo: user.rollNo || null,
+//         facultyId: user.facultyId || null,
+//       },
+//     });
+//   } catch (err) {
+//     console.error("Login error:", err);
+//     res.status(500).json({ message: "Login failed" });
+//   }
+// };
+
+
+// exports.login = async (req, res) => {
+//   console.log("API HIT : /login")
+//   try {
+//     let { userId, password } = req.body;
+
+//     if (!userId || !password) {
+//       return res.status(400).json({ message: "All fields are required" });
+//     }
+
+//     userId = userId.trim().toUpperCase();
+//     password = password.trim();
+
+//     // 🔍 Try student first, then faculty
+//     const user = await User.findOne({
+//       $or: [
+//         { rollNo: userId },
+//         { facultyId: userId }
+//       ]
+//     }).select("+password");
+
+//     if (!user) {
+//       return res.status(401).json({ message: "Invalid ID or password" });
+//     }
+
+//     const match = await bcrypt.compare(password, user.password);
+//     if (!match) {
+//       return res.status(401).json({ message: "Invalid ID or password" });
+//     }
+
+//     const at = accessToken(user);
+//     const rt = refreshToken(user);
+
+//     res.cookie("refreshToken", rt, {
+//       httpOnly: true,
+//       sameSite: "lax",
+//       secure: false
+//     });
+
+//     res.json({
+//       accessToken: at,
+//       user: {
+//         id: user._id,
+//         name: user.name,
+//         role: user.role,
+//         rollNo: user.rollNo || null,
+//         facultyId: user.facultyId || null
+//       }
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "Login failed" });
+//   }
+// };
+
+
+
+
+// exports.login = async (req, res) => {
+//   console.log("API HIT : /login")
+//   try {
+//     let { userId, password } = req.body;
+
+//     if (!userId || !password) {
+//       return res.status(400).json({ message: "All fields are required" });
+//     }
+
+//     userId = userId.trim().toUpperCase();
+//     password = password.trim();
+
+//     // 🔍 Try student first, then faculty
+//     const user = await User.findOne({
+//       $or: [
+//         { rollNo: userId },
+//         { facultyId: userId }
+//       ]
+//     }).select("+password");
+
+//     if (!user) {
+//       return res.status(401).json({ message: "Invalid ID or password" });
+//     }
+
+//     const match = await bcrypt.compare(password, user.password);
+//     if (!match) {
+//       return res.status(401).json({ message: "Invalid ID or password" });
+//     }
+
+//     const at = accessToken(user);
+//     const rt = refreshToken(user);
+
+//     res.cookie("refreshToken", rt, {
+//       httpOnly: true,
+//       sameSite: "lax",
+//       secure: false
+//     });
+
+//     res.json({
+//       accessToken: at,
+//       user: {
+//         id: user._id,
+//         name: user.name,
+//         role: user.role,
+//         rollNo: user.rollNo || null,
+//         facultyId: user.facultyId || null
+//       }
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     console.error("Login error:", err);
+//     res.status(500).json({ message: "Login failed" });
+//   }
+// };
 
 
 exports.login = async (req, res) => {
-  console.log("API HIT : /login")
+  console.log("API HIT : /login");
+
   try {
     let { userId, password } = req.body;
-
     if (!userId || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -138,15 +300,12 @@ exports.login = async (req, res) => {
     userId = userId.trim().toUpperCase();
     password = password.trim();
 
-    // 🔍 Try student first, then faculty
     const user = await User.findOne({
-      $or: [
-        { rollNo: userId },
-        { facultyId: userId }
-      ]
+      
+      $or: [{ rollNo: userId }, { facultyId: userId }],
     }).select("+password");
 
-    if (!user) {
+    if (!user || !user.password) {
       return res.status(401).json({ message: "Invalid ID or password" });
     }
 
@@ -155,13 +314,18 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: "Invalid ID or password" });
     }
 
+    // Make sure accessToken / refreshToken functions exist
+    if (!accessToken || !refreshToken) {
+      return res.status(500).json({ message: "Token functions not defined" });
+    }
+
     const at = accessToken(user);
     const rt = refreshToken(user);
 
     res.cookie("refreshToken", rt, {
       httpOnly: true,
       sameSite: "lax",
-      secure: false
+      secure: false,
     });
 
     res.json({
@@ -171,16 +335,14 @@ exports.login = async (req, res) => {
         name: user.name,
         role: user.role,
         rollNo: user.rollNo || null,
-        facultyId: user.facultyId || null
-      }
+        facultyId: user.facultyId || null,
+      },
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Login failed" });
+    console.error("Login error:", err);
+    res.status(500).json({ message: "Login failed", error: err.message });
   }
 };
-
-
 
 
 /* REFRESH TOKEN */

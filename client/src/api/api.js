@@ -3,7 +3,7 @@ import axios from "axios";
 // const API = process.env.REACT_APP_API_URL;
 
 const api = axios.create({
-  // baseURL: "http://localhost:3000",
+  // baseURL: "http://localhost:5000",
   // baseURL: "http://192.168.1.150:5000",
   // baseURL: "/api",
   baseURL: "https://jbiet-mentor.onrender.com",

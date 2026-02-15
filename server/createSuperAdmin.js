@@ -15,12 +15,12 @@ app.use(cookieParser());
 app.use(express.urlencoded({extended:true}))
 
 app.use(cors({
-  origin: [{API}],
+  origin: [ {API},"http://localhost:3001"], //
   credentials: true
 }));
 // "http://localhost:3000"]
  
-
+ 
 
 mongoose.connect("mongodb+srv://arukalaraju13_db_user:YZSoEpZwx9EBIGiU@cluster0.c6krizy.mongodb.net/collegeAuth");
 

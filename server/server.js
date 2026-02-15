@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-require("dotenv").config();
+const env = require("dotenv").config();
 const connectDB = require("./config/db");
 
 const app = express();
@@ -20,7 +20,7 @@ app.use(compression());
 
 app.use(cors({
   origin: [
-    // "http://localhost:3000",
+    "http://localhost:3001",
     // "http://192.168.1.150:3000"
 "https://jbiet-mentor.onrender.com"
   ],
@@ -64,10 +64,11 @@ connectDB()
 // app.listen(5000, "0.0.0.0", () => console.log("Server running"));
 
 const PORT = process.env.PORT || 5000;
-// 
+// process.env.PORT ||
 
-app.listen(PORT, () => {
+app.listen(PORT, () => { 
   console.log(`Server running on port ${PORT}`);
 });
 
 
+  
