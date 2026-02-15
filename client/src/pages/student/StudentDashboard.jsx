@@ -42,6 +42,7 @@ export default function StudentDashboard() {
 
   //student details 
   useEffect(() => {
+    console.log("student dashboard fetching ...")
     if (!auth?.accessToken) return;
     api.get("/auth/dashboard")
       .then(res => setData(res.data))
