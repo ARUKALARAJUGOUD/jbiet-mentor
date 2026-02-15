@@ -14,7 +14,7 @@ import TopperPage from "./pages/admin/Students/TopperPage";
 import CreateFaculty from "./pages/admin/Faculty/CreateFaculty";
 import FacultyList from "./pages/admin/Faculty/FacultyList";
 // Subjects / Marks / Attendance
-import { useNavigate } from "react-router-dom";
+import { Navigate  } from "react-router-dom";
 import AdminLayout from "./layouts/AdminLayout";
 import FacultyLayout from "./layouts/FacultyLayout.jsx";
 import AddAttendance from "./pages/admin/Attendance/AddAttendance";
@@ -30,8 +30,9 @@ import StudentAttendance from "./pages/student/StudentProfile/StudentAttendance.
 import StudentDashboardprofile from "./pages/student/StudentProfile/StudentDashboardprofile.jsx";
 import StudentResult from "./pages/student/StudentProfile/StudentResult.jsx";
 export default function App() {
-  const Navigate = useNavigate();
+ 
   return (
+    
     <BrowserRouter>
       <Routes>
         {/* ========= PUBLIC ========= */}
