@@ -1,0 +1,121 @@
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+.create-student-page {
+  min-height: 100vh;
+  background: #f4f6fb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.student-form-card {
+  background: white;
+  width: 100%;
+  max-width: 600px;
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.student-form-card h2 {
+  color: #1f3c88;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+/* Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-grid input,
+.form-grid select {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+  background: #f9fbff;
+
+
+ width: 100%;              /* add */
+  max-width: 100%; 
+}
+
+.form-grid input:focus,
+.form-grid select:focus {
+  border-color: #1f3c88;
+  background: white;
+}
+
+/* Button */
+.create-btn {
+  width: 100%;
+  margin-top: 25px;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  background: #1f3c88;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.create-btn:hover {
+  background: #163072;
+}
+
+/* Error */
+.form-error {
+  background: #ffe1e1;
+  color: #b00000;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-form-card {
+    padding: 25px;
+  }
+}
+
+
+@media (max-width: 280px) {
+  .student-form-card {
+    padding: 15px;
+  }
+
+  .form-grid input,
+  .form-grid select {
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .create-btn {
+    padding: 10px;
+    font-size: 13px;
+  }
+}

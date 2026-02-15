@@ -1,0 +1,166 @@
+/* ===== Page Layout ===== */
+.login-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eef2f7, #dfe7f1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* ===== Login Card ===== */
+.login-glass {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.98);
+  padding: 32px;
+  border-radius: 18px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: fadeIn 0.6s ease;
+}
+
+.login-glass h1 {
+  font-size: 24px;
+  color: #1f3c88;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 25px;
+}
+
+/* ===== Inputs ===== */
+.input-group {
+  position: relative;
+  margin-bottom: 18px;
+  max-width: 100%;
+}
+
+.input-group input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 38px 14px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 14px;
+  background: #f9fbff;
+}
+
+.input-group input:focus {
+  border-color: #1f3c88;
+  background: white;
+}
+
+/* Floating label */
+.input-group label {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  background: white;
+  padding: 0 4px;
+  font-size: 13px;
+  color: #777;
+  transform: translateY(-50%);
+  transition: 0.2s ease;
+  pointer-events: none;
+}
+
+.input-group input:focus + label,
+.input-group input:valid + label {
+  top: -6px;
+  font-size: 11px;
+  color: #1f3c88;
+}
+
+/* ===== Password Eye ===== */
+.password span {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888;
+}
+
+/* ===== Button ===== */
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: 0.3s ease;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+}
+
+.login-btn:disabled {
+  background: #94a3b8;
+}
+
+/* ===== Error ===== */
+.error-box {
+  background: #ffe1e1;
+  color: #b00000;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-size: 13px;
+}
+
+/* ===== Footer ===== */
+.footer-text {
+  margin-top: 22px;
+  font-size: 11px;
+  color: #777;
+}
+
+/* ===== Small Phones ===== */
+@media (max-width: 360px) {
+  .login-glass {
+    padding: 24px 18px;
+  }
+  .login-glass h1 {
+    font-size: 20px;
+  }
+}
+
+/* ===== Tablets ===== */
+@media (min-width: 600px) {
+  .login-glass {
+    max-width: 420px;
+    padding: 40px;
+  }
+}
+
+/* ===== Laptops ===== */
+@media (min-width: 1024px) {
+  .login-glass {
+    max-width: 460px;
+  }
+}
+
+/* ===== Animation ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

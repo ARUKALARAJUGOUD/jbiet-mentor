@@ -1,0 +1,211 @@
+/* Header container */
+.daywise-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* Title */
+.daywise-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* ======================================
+   DAYWISE FILTER
+====================================== */
+
+.daywise-filter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* Label */
+.daywise-filter label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 0; 
+  /* 🔥 remove breaking space */
+  white-space: nowrap;
+}
+
+/* Date Input */
+.daywise-filter input[type="date"] {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+
+  width: 180px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Clear Button */
+.clear-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  background-color: #ef4444;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+
+  white-space: nowrap;
+}
+
+.clear-btn:hover {
+  background-color: #dc2626;
+}
+
+
+
+
+
+
+
+
+/* Horizontal scroll wrapper */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 20px;
+}
+
+/* Table base */
+.attendance-table {
+  width: 100%;
+  min-width: 900px; /* 👈 keeps structure on mobile */
+  border-collapse: collapse;
+  border: 2px solid rgb(231, 229, 229);
+}
+
+/* Cells */
+.attendance-table th,
+.attendance-table td {
+  padding: 12px 14px;
+  border: 1px solid #d6d6d6;
+  text-align: center;
+  white-space: nowrap;
+}
+.view-btn {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2563eb;                 /* blue text */
+  background-color: #eff6ff;      /* light blue bg */
+  border: 1px solid #2563eb;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.view-btn:hover {
+  background-color: #2563eb;      /* solid blue */
+  color: #ffffff;                /* white text */
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+  transform: translateY(-1px);
+}
+
+.view-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.2);
+}
+
+
+/* Header */
+.attendance-table th {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+/* 🔴 Highlight 0% attendance day */
+.zero-attendance {
+  background-color: #fff1f2;
+}
+
+.zero-attendance td {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+
+
+
+/* 📱 Mobile adjustment */
+@media (max-width: 640px) {
+  .daywise-filter {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .daywise-filter input[type="date"],
+  .clear-btn {
+    width: 100%;
+    max-width: 100%;
+  }
+   .view-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+
+/* ======================================
+   BELOW 460px
+====================================== */
+
+@media (max-width: 460px) {
+
+  .daywise-filter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .daywise-filter label {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .daywise-filter input[type="date"] {
+    width: 100%;
+  }
+
+  .clear-btn {
+    width: 100%;
+  }
+}
+
+
+
+
+@media (max-width: 280px) {
+
+  .daywise-filter label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .daywise-filter input[type="date"] {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+
+  .clear-btn {
+    font-size: 13px;
+    padding: 7px;
+  }
+}

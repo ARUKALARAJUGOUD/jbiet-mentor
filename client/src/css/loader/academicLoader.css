@@ -1,0 +1,165 @@
+
+.premium-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: radial-gradient(circle at top, #142850, #0c1a33 70%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: #fff;
+}
+
+/* Soft dark overlay */
+.overlay {
+  position: absolute;
+  inset: 0;
+  /* backdrop-filter: blur(6px); */
+}
+
+/* Center Content */
+.premium-content {
+  position: relative;
+  text-align: center;
+  width: 420px;
+  z-index: 2;
+}
+
+
+
+/* Seal Container */
+.seal-container {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 30px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Rotating Gold Ring Only */
+.rotating-ring {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 6px solid rgba(255,255,255,0.15);
+  border-top: 6px solid #d4af37;
+  animation: rotate 4s linear infinite;
+  box-shadow: 0 0 35px rgba(212,175,55,0.6);
+}
+
+/* Fixed Logo */
+.fixed-logo {
+  /* width: 90px; */
+  /* height: 90px; */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  z-index: 2;
+  animation: softPulse 3s ease-in-out infinite;
+}
+
+/* Animation */
+@keyframes rotate {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes softPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+
+
+/* Titles */
+.premium-title {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+
+.premium-subtitle {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-bottom: 18px;
+}
+
+.divider {
+  width: 60px;
+  height: 2px;
+  background: #d4af37;
+  margin: 0 auto 15px auto;
+}
+
+.motto {
+  font-size: 13px;
+  font-style: italic;
+  opacity: 0.8;
+  margin-bottom: 25px;
+}
+
+/* Progress */
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #d4af37, #f8e48c);
+  animation: loadProgress 3.5s ease forwards;
+}
+
+.loading-text {
+  font-size: 13px;
+  letter-spacing: 1px;
+  opacity: 0.75;
+}
+
+/* Floating particles */
+.particles::before,
+.particles::after {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
+  animation: float 6s ease-in-out infinite alternate;
+}
+
+.particles::after {
+  right: -100px;
+  bottom: -100px;
+  animation-delay: 2s;
+}
+
+/* Animations */
+@keyframes rotate {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes loadProgress {
+  to { width: 100%; }
+}
+
+@keyframes float {
+  from { transform: translateY(0); }
+  to { transform: translateY(-30px); }
+}

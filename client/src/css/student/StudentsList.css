@@ -1,0 +1,136 @@
+* {
+  box-sizing: border-box;
+}
+
+.students-page {
+  padding: 20px;
+  background: #f4f6fb;
+  min-height: 100vh;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.students-page h2 {
+  color: #1f3c88;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 15px;
+}
+
+/* FILTER BAR */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  margin-bottom: 15px;
+}
+
+.filter-bar select,
+.filter-bar input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background: #f9fbff;
+  outline: none;
+}
+
+.filter-bar select:focus,
+.filter-bar input:focus {
+  border-color: #1f3c88;
+  background: white;
+}
+
+/* TABLE */
+.table-wrapper {
+  background: white;
+  border-radius: 10px;
+  overflow-x: auto;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+}
+
+.students-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 500px;
+  overflow: auto;
+}
+
+.students-table th {
+  background: #1f3c88;
+  color: white;
+  text-align: left;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.students-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.students-table tr:hover {
+  background: #f3f6ff;
+}
+
+/* Action Button */
+.students-table button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background: #1f3c88;
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.students-table button:hover {
+  background: #163072;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #777;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .filter-bar {
+    flex-direction: column;
+  }
+
+  .students-table {
+    min-width: 500px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

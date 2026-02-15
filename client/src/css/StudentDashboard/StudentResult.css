@@ -1,0 +1,274 @@
+/* result container  */
+
+.result-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* card styling  */
+.result-card,
+.result-display-card {
+  padding: 25px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+
+/* title  */
+.card-title {
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+
+/* form layout  */
+
+.result-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  align-items: end;
+}
+
+
+/* from groups  */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 13px;
+  margin-bottom: 5px;
+  color: #64748b;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+}
+
+
+
+/* button  */
+.primary-btn {
+  padding: 10px 18px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.primary-btn:hover {
+  background: #1d4ed8;
+}
+
+
+/* result table  */
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.result-table th,
+.result-table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  font-size: 14px;
+}
+
+.result-table thead {
+  background: #f1f5f9;
+}
+
+
+/* fails row  */
+
+.fail-row {
+  background-color: #ffe6e6;
+}
+
+/* sgpa box  */
+.sgpa-box {
+  margin-top: 15px;
+  padding: 12px;
+  background: #e8f5e9;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+
+/* print buttons  */
+.print-btn {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+.print-btn button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.print-btn button:first-child {
+  background: #2563eb;
+  color: white;
+}
+
+.print-btn button:last-child {
+  background: #10b981;
+  color: white;
+}
+
+/* fix right side space  */
+/* .print-area {
+  width: 100%;
+  overflow-x: hidden;
+} */
+
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.result-table {
+  min-width: 700px; /* forces scroll on small screens */
+}
+
+.table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+
+
+/* college header styling  */
+.college-header {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 10px 0;
+}
+
+.college-header-inner {
+  max-width: 100%;
+  padding: 0 10px;
+}
+
+.college-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
+  word-wrap: break-word;
+}
+
+.college-sub {
+  font-size: 13px;
+  margin-top: 5px;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* student info grid  */
+.student-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.info-box {
+  background: #f8fafc;
+  padding: 10px 12px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.info-box span {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.info-box strong {
+  font-size: 14px;
+  color: #1e293b;
+  margin-top: 2px;
+}
+
+
+@media (max-width: 600px) {
+
+  .college-name {
+    font-size: 16px;
+  }
+
+  .college-sub {
+    font-size: 11px;
+  }
+
+  .student-info {
+    grid-template-columns: 1fr;
+  }
+
+  .info-box strong {
+    font-size: 13px;
+  }
+
+}
+
+/* mobile responsive  */
+@media (max-width: 250px) {
+
+  .result-form {
+    grid-template-columns: 1fr;
+  }
+
+  .student-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-table th,
+  .result-table td {
+    font-size: 11px;
+    padding: 6px;
+  }
+
+  .primary-btn {
+    width: 100%;
+  }
+
+}
+
+

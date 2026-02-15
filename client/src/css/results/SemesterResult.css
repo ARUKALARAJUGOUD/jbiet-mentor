@@ -1,0 +1,128 @@
+/* =====================================================
+   CONTAINER
+===================================================== */
+.results-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 16px;
+}
+
+/* TITLES */
+.results-container h2 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.sub-title {
+  margin: 20px 0 10px;
+  font-size: 16px;
+}
+
+/* =====================================================
+   TABLE WRAPPER
+===================================================== */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  /* -webkit-overflow-scrolling: touch; */
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+/* =====================================================
+   TABLE
+===================================================== */
+.results-table {
+  width: 100%;
+  min-width: 760px; /* 🔥 CRITICAL */
+  border-collapse: collapse;
+  background: white;
+}
+
+.results-table th {
+  background: #f1f5f9;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.results-table td {
+  padding: 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+/* =====================================================
+   BUTTON
+===================================================== */
+.view-btn {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: #1e293b;
+  color: white;
+}
+
+.view-btn:hover {
+  background: #0f172a;
+}
+
+/* =====================================================
+   STATUS
+===================================================== */
+.status-pass {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.status-fail {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+/* Tablets */
+@media (max-width: 768px) {
+  .results-container h2 {
+    font-size: 18px;
+  }
+
+  .results-table th,
+  .results-table td {
+    font-size: 13px;
+    padding: 10px;
+  }
+}
+
+/* Mobiles */
+@media (max-width: 480px) {
+  .sub-title {
+    font-size: 14px;
+  }
+}
+
+/* Ultra-small devices */
+@media (max-width: 250px) {
+  .results-container h2 {
+    font-size: 16px;
+  }
+
+  .results-table th,
+  .results-table td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .view-btn {
+    font-size: 12px;
+    padding: 6px;
+  }
+}

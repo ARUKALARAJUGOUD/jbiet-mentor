@@ -1,0 +1,113 @@
+/* =====================================================
+   CREATE FACULTY FORM
+===================================================== */
+.faculty-form-page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* CARD */
+.faculty-form-card {
+  width: 100%;
+  max-width: 520px; /* 🔑 desktop width */
+  background: white;
+  padding: 24px;
+
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* TITLE */
+.form-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* FORM GROUP */
+.form-group {
+  margin-bottom: 14px;
+}
+
+/* INPUTS & SELECTS */
+.faculty-form-card input,
+.faculty-form-card select {
+  width: 100%;
+  padding: 12px 14px;
+
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.faculty-form-card input:focus,
+.faculty-form-card select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+}
+
+/* ERROR */
+.form-error {
+  color: #dc2626;
+  font-size: 13px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* BUTTON */
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+
+  background: #1e293b;
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.submit-btn:hover {
+  background: #0f172a;
+  transform: translateY(-1px);
+}
+
+/* =====================================================
+   RESPONSIVE TWEAKS
+===================================================== */
+@media (max-width: 768px) {
+  .faculty-form-card {
+    padding: 20px;
+  }
+
+  .form-title {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .faculty-form-card {
+    padding: 16px;
+  }
+
+  .form-title {
+    font-size: 18px;
+  }
+
+  .faculty-form-card input,
+  .faculty-form-card select {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+}

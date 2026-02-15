@@ -1,0 +1,116 @@
+/* =====================================================
+   FACULTY PAGE
+===================================================== */
+.faculty-page {
+  width: 100%;
+  padding: 16px;
+}
+
+.faculty-title {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* =====================================================
+   TABLE WRAPPER (SCROLL FIX 🔑)
+===================================================== */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto; /* 🔑 horizontal scroll only for table */
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+/* =====================================================
+   TABLE
+===================================================== */
+.faculty-table {
+  width: 100%;
+  min-width: 900px; /* 🔑 prevents column crush on mobile */
+  border-collapse: collapse;
+}
+
+/* HEADER */
+.faculty-table thead th {
+  position: sticky;
+  top: 0;
+  background: #1e293b;
+  color: white;
+
+  padding: 12px 14px;
+  font-size: 14px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* BODY */
+.faculty-table tbody td {
+  padding: 12px 14px;
+  font-size: 14px;
+  color: #0f172a;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+/* ROW HOVER */
+.faculty-table tbody tr:hover {
+  background: #f1f5f9;
+}
+
+/* =====================================================
+   BUTTON
+===================================================== */
+.delete-btn {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #b91c1c;
+}
+
+/* =====================================================
+   RESPONSIVE TWEAKS
+===================================================== */
+@media (max-width: 768px) {
+  .faculty-title {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .faculty-table {
+    min-width: 800px;
+  }
+
+  .faculty-table thead th,
+  .faculty-table tbody td {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .faculty-table {
+    min-width: 750px;
+  }
+
+  .faculty-table thead th,
+  .faculty-table tbody td {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .delete-btn {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}

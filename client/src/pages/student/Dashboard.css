@@ -1,0 +1,512 @@
+/* STUDENT DASHBOARD  */
+.student-dashboard {
+  min-height: 100vh;
+  background: #f8fafc;
+  overflow-x: hidden;
+}
+
+/* ===== PAGE LAYOUT STRUCTURE ===== */
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main content takes remaining space */
+.main-content {
+  flex: 1;
+}
+
+/* STUDENT HEADER  */
+
+.student-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  background: #0f172a;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  flex-wrap: wrap;
+}
+
+/* 
+.college-logo {
+  width: 200px;
+  height: 50px;
+  border-radius: 10%;
+} */
+
+/* LOGO WRAPPER (Professional Control) */
+.logo-wrapper {
+  height: 60px; /* 🔥 fixed clean header height */
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* LOGO IMAGE */
+.college-logo {
+  height: 90px;
+  width: auto; /* 🔥 keeps natural ratio */
+  object-fit: contain; /* 🔥 no distortion */
+  display: block;
+  border-radius: 50%;
+}
+
+.student-nav-center {
+  text-align: center;
+}
+
+.student-nav-center h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.student-nav-center span {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.student-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logout-btn {
+  background: #ef4444;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* MENU BAR  */
+.student-menu {
+  display: flex;
+  gap: 14px;
+  padding: 10px 14px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  overflow-x: auto;
+  margin-bottom: 10px;
+  border-bottom: 2px solid rgb(24, 24, 66);
+}
+
+.student-menu a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.student-menu a:hover {
+  background: #e0e7ff;
+  color: #1d4ed8;
+}
+
+/* STATS GRID  */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: white;
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.stat-card.warning {
+  background: #fff1f2;
+  color: #b91c1c;
+}
+/* MAIN DASHBOARD GRID  */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+/* CARD  + TABLE SCROLL  */
+.card {
+  background: white;
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.card table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+.card {
+  overflow-x: auto;
+}
+
+/* BACKLOGS CSS   */
+.backlogs-card {
+  background: white;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  width: 100%;
+}
+
+/* title */
+
+.backlogs-card h3 {
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+/* table wrapper  */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 10px;
+}
+
+/* table styling  */
+.academic-table {
+  width: 100%;
+  min-width: 750px; /* IMPORTANT */
+  border-collapse: collapse;
+}
+
+.academic-table th,
+.academic-table td {
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+  font-size: 14px;
+}
+
+.academic-table thead {
+  background: #f1f5f9;
+}
+
+.academic-table tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+/* empty message  */
+.empty-msg {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+/* summary responsive  */
+.backlog-summary {
+  margin-top: 12px;
+  display: flex;
+  gap: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  flex-wrap: wrap;
+}
+
+/* SEMESTER WISE ACADAMIC PERFORMANCE  */
+.semester-card {
+  background: white;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  width: 100%;
+}
+
+/* row states  */
+.row-backlog {
+  background: #ffe6e6;
+}
+
+.row-total {
+  font-weight: 700;
+  background: #e8f5e9;
+}
+/* table  */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 10px;
+}
+
+.academic-table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: collapse;
+}
+
+.academic-table th,
+.academic-table td {
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+  font-size: 14px;
+}
+
+.academic-table thead {
+  background: #f1f5f9;
+}
+
+.academic-table tr:nth-child(even):not(.row-backlog):not(.row-total) {
+  background: #f9fafb;
+}
+
+/* REMOVES THE SCROLL BAR  */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.table-wrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* footer  */
+
+/* .student-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 40px;
+  background: #1e293b;
+  color: #e2e8f0;
+  flex-wrap: wrap;
+  margin-top: 50px;
+}
+
+.student-footer h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.student-footer p {
+  margin: 4px 0;
+  font-size: 13px;
+} */
+
+.student-footer {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 25px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  border-top: 3px solid #2563eb;
+}
+
+.student-footer h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.student-footer p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+/* RESPOSIVE FOR SMALLER DEVICES  */
+@media (max-width: 768px) {
+  .backlogs-card {
+    padding: 12px;
+  }
+
+  .backlogs-card h3 {
+    font-size: 16px;
+  }
+
+  .academic-table th,
+  .academic-table td {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  /* header responsive */
+  .student-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .student-nav-left,
+  .student-nav-right {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .student-nav-center {
+    width: 100%;
+  }
+
+  .student-nav-center h2 {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .student-nav-center span {
+    font-size: 11px;
+  }
+
+  .roll-no {
+    font-size: 13px;
+  }
+
+  .logout-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+
+  .student-footer {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .footer-left,
+  .footer-center,
+  .footer-right {
+    width: 100%;
+  }
+
+  .student-footer h4 {
+    font-size: 14px;
+  }
+
+  .student-footer p {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* 
+  .college-logo {
+    width: 50px;
+  } */
+
+  .student-nav-center h2 {
+    font-size: 14px;
+  }
+
+  .student-nav-center span {
+    font-size: 10px;
+  }
+
+  .logout-btn {
+    padding: 5px 12px;
+    font-size: 11px;
+  }
+
+  .student-footer {
+    padding: 18px 15px;
+  }
+
+  .student-footer h4 {
+    font-size: 13px;
+  }
+
+  .student-footer p {
+    font-size: 10px;
+  }
+}
+
+/* mobile responsive for backlogs  */
+
+@media (max-width: 250px) {
+  .backlogs-card {
+    padding: 8px;
+  }
+
+  .backlogs-card h3 {
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .academic-table {
+    min-width: 600px; /* still scrolls */
+  }
+
+  .backlog-summary {
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    text-align: center;
+  }
+  /* header  */
+  .student-header {
+    padding: 10px;
+  }
+
+  .student-nav-center h2 {
+    font-size: 11px;
+  }
+
+  .student-nav-center span {
+    font-size: 9px;
+  }
+
+  .college-logo {
+    width: 90px;
+  }
+
+  .roll-no {
+    font-size: 10px;
+  }
+
+  .logout-btn {
+    padding: 4px 8px;
+    font-size: 9px;
+  }
+  .student-nav-center h2 {
+    font-size: 14px;
+  }
+
+  .student-menu a span {
+    display: none; /* icons only */
+  }
+
+  .student-menu {
+    justify-content: center;
+  }
+
+  .stat-card h4 {
+    font-size: 12px;
+  }
+
+  .stat-card p {
+    font-size: 14px;
+  }
+
+  .student-footer {
+    padding: 12px 8px;
+  }
+
+  .student-footer h4 {
+    font-size: 11px;
+  }
+
+  .student-footer p {
+    font-size: 9px;
+  }
+}

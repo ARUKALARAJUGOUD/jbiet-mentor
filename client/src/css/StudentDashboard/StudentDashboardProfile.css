@@ -1,0 +1,63 @@
+/* profile cred  */
+.profile-card {
+  padding: 25px;
+}
+
+/* title styling  */
+.profile-title {
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* grid layout  */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+/* individual profile item  */
+.profile-item {
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  transition: 0.2s ease;
+}
+
+.profile-item:hover {
+  background: #eef2ff;
+}
+
+/* label plus value styling  */
+.profile-item .label {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 5px;
+}
+
+.profile-item .value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+  word-break: break-word;
+}
+
+
+/* responsive  */
+@media (max-width: 250px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-item {
+    padding: 10px;
+  }
+
+  .profile-item .value {
+    font-size: 13px;
+  }
+}

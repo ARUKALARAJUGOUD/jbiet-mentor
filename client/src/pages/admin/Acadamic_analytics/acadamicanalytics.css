@@ -1,0 +1,219 @@
+.analytics-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.analytics-table th,
+.analytics-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+}
+
+.analytics-table th {
+  background-color: #f4f6f8;
+}
+
+.danger-row {
+  background-color: #ffe5e5;
+  color: #b10000;
+  font-weight: 600;
+}
+
+.analytics-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.analytics-filters select,
+.analytics-filters button {
+  padding: 8px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =====================================================
+   PAGE
+===================================================== */
+.analytics-page {
+  width: 100%;
+  padding: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+/* =====================================================
+   CONTAINER
+===================================================== */
+.analytics-container {
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* =====================================================
+   TITLE
+===================================================== */
+.analytics-container h2 {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+/* =====================================================
+   FILTER CARD
+===================================================== */
+/* =====================================================
+   FILTERS GRID
+===================================================== */
+.analytics-filters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* Selects & Button */
+.analytics-filters select,
+.analytics-filters button {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
+/* Apply Button */
+.apply-btn {
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.apply-btn:hover {
+  background: #1d4ed8;
+}
+
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+.analytics-loading {
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* =====================================================
+   TABLE WRAPPER (HORIZONTAL SCROLL)
+===================================================== */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 10px;
+}
+
+/* =====================================================
+   TABLE (FORCE TABLE STRUCTURE)
+===================================================== */
+.analytics-table {
+  width: 100%;
+  min-width: 900px; /* 🔥 ensures scroll on small devices */
+  border-collapse: collapse;
+  background: #ffffff;
+}
+
+.analytics-table th {
+  background: #f1f5f9;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.analytics-table td {
+  padding: 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+/* Tablets */
+@media (max-width: 768px) {
+  .analytics-container h2 {
+    font-size: 18px;
+  }
+
+  .analytics-filters-card {
+    padding: 14px;
+  }
+
+  .analytics-table th,
+  .analytics-table td {
+    font-size: 13px;
+    padding: 10px;
+  }
+  .analytics-filters {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobiles */
+@media (max-width: 480px) {
+  .analytics-container h2 {
+    font-size: 17px;
+  }
+
+  .analytics-filters-card {
+    padding: 12px;
+  }
+  .analytics-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .apply-btn {
+    font-size: 15px;
+    padding: 12px;
+  }
+}

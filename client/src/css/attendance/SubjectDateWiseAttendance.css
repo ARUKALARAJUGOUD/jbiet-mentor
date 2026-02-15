@@ -1,0 +1,154 @@
+/* =========================================
+   ATTENDANCE PAGE
+========================================= */
+
+.attendance-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.attendance-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #1e293b;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* =========================================
+   FORM SECTION
+========================================= */
+
+.form-section {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  align-items: center;
+}
+
+/* Inputs & Selects */
+.form-section input,
+.form-section select {
+    width: 100%;
+    max-width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.form-section input:focus,
+.form-section select:focus {
+  border-color: #1e293b;
+}
+
+/* Button */
+.form-section button {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #1e293b;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.form-section button:hover {
+  background: #334155;
+}
+
+/* =========================================
+   TABLE SECTION
+========================================= */
+
+/* =========================================
+   TABLE WRAPPER (REAL SCROLL FIX)
+========================================= */
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Force table to expand beyond small screens */
+.attendance-table {
+  min-width: 500px;  /* 🔥 key line */
+}
+
+
+.attendance-table {
+  width: 100%;
+  min-width: 500px;  /* 🔥 key line */
+
+  margin-top: 25px;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.attendance-table thead {
+  background: #1e293b;
+  color: white;
+}
+
+.attendance-table th,
+.attendance-table td {
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.attendance-table tbody tr:nth-child(even) {
+  background: #f1f5f9;
+}
+
+.attendance-table span {
+  font-size: 11px;
+  display: block;
+  font-weight: normal;
+  opacity: 0.8;
+}
+
+/* =========================================
+   MOBILE RESPONSIVENESS
+========================================= */
+
+@media (max-width: 768px) {
+
+  .attendance-container {
+    padding: 16px;
+  }
+
+  .form-section {
+    grid-template-columns: 1fr; /* 🔥 stack vertically */
+    padding: 16px;
+  }
+
+  .form-section button {
+    width: 100%;
+  }
+
+  /* Table scroll fix */
+  .attendance-table {
+     min-width: 500px;  /* 🔥 key line */
+  }
+
+  .attendance-table th,
+  .attendance-table td {
+    font-size: 13px;
+    padding: 10px;
+  }
+}

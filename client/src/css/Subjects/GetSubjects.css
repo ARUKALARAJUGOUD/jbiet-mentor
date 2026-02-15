@@ -1,0 +1,197 @@
+/* =====================================================
+   SUBJECTS PAGE
+===================================================== */
+.subjects-page {
+  width: 100%;
+  padding: 16px;
+}
+
+.subjects-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 16px;
+}
+
+/* =====================================================
+   FILTER CARD
+===================================================== */
+/* .subjects-filter-card {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  border: 2px solid red;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+
+  margin-bottom: 20px;
+} */
+
+.subjects-filter-card {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  width: 100%;
+  max-width: 100%;
+  overflow-x:hidden; /* 🔑 hard stop overflow */
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+
+  margin-bottom: 20px;
+}
+
+
+
+.subjects-filter-card select {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0; /*🔑 VERY IMPORTANT for grid overflow*/
+  padding: 12px 14px;
+
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+
+  box-sizing: border-box;
+}
+
+/* 
+.subjects-filter-card select {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+} */
+
+.subjects-filter-card select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+}
+
+/* =====================================================
+   STATUS TEXT
+===================================================== */
+.status-text {
+  text-align: center;
+  font-size: 14px;
+  color: #475569;
+}
+
+.error-text {
+  text-align: center;
+  font-size: 14px;
+  color: #dc2626;
+}
+
+/* =====================================================
+   TABLE WRAPPER (MOBILE SCROLL FIX 🔑)
+===================================================== */
+.subjects-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+/* =====================================================
+   TABLE
+===================================================== */
+.subjects-table {
+  width: 100%;
+  min-width: 650px; /* 🔑 prevents collapse */
+  border-collapse: collapse;
+}
+
+/* HEADER */
+.subjects-table thead th {
+  background: #1e293b;
+  color: white;
+  padding: 12px 14px;
+  font-size: 14px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* BODY */
+.subjects-table tbody td {
+  padding: 12px 14px;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.subjects-table tbody tr:hover {
+  background: #f1f5f9;
+}
+
+/* =====================================================
+   BUTTON
+===================================================== */
+.delete-btn {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #b91c1c;
+}
+
+/* =====================================================
+   RESPONSIVE TWEAKS
+===================================================== */
+@media (max-width: 768px) {
+  .subjects-title {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .subjects-table {
+    min-width: 600px;
+  }
+
+  .subjects-table thead th,
+  .subjects-table tbody td {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .subjects-table {
+    min-width: 550px;
+  }
+
+  .subjects-table thead th,
+  .subjects-table tbody td {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .delete-btn {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+   .subjects-filter-card {
+    grid-template-columns: 1fr;  /* 🔑 NO overflow possible */
+    padding: 14px;
+  }
+
+}

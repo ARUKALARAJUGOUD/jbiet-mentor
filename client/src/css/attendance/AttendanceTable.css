@@ -1,0 +1,180 @@
+/* =====================================================
+   PAGE
+===================================================== */
+.attendance-page {
+  width: 100%;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+/* =====================================================
+   CONTAINER
+===================================================== */
+.attendance-container {
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* =====================================================
+   TITLE
+===================================================== */
+.attendance-container h2 {
+  margin-bottom: 14px;
+  font-size: 20px;
+}
+
+/* =====================================================
+   FILTER CARD
+===================================================== */
+.attendance-filters-card {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+
+  margin-bottom: 20px;
+}
+
+/* Inputs & selects */
+.attendance-filters-card select,
+.attendance-filters-card input {
+  width: 100%;
+  min-width: 0;
+
+  padding: 10px 12px;
+  font-size: 14px;
+
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+}
+
+.attendance-filters-card select:focus,
+.attendance-filters-card input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+}
+
+/* Remove number spinner */
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Search button */
+.filter-btn {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #1e293b;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-btn:hover {
+  background: #0f172a;
+}
+
+/* Student count */
+.student-count {
+  grid-column: 1 / -1;
+  font-size: 14px;
+  padding-top: 4px;
+}
+
+/* =====================================================
+   TABLE WRAPPER
+===================================================== */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 10px;
+}
+
+/* =====================================================
+   TABLE
+===================================================== */
+.attendance-table {
+  width: 100%;
+  min-width: 600px; /* forces scroll on small screens */
+  border-collapse: collapse;
+  background: white;
+}
+
+.attendance-table th,
+.attendance-table td {
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.attendance-table th {
+  background: #f1f5f9;
+  font-weight: 600;
+}
+
+/* Low attendance highlight */
+.low-attendance {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* =====================================================
+   RESPONSIVE BREAKPOINTS
+===================================================== */
+
+/* Tablets */
+@media (max-width: 768px) {
+  .attendance-container h2 {
+    font-size: 18px;
+  }
+
+  .attendance-filters-card {
+    padding: 14px;
+  }
+}
+
+/* Mobiles */
+@media (max-width: 480px) {
+  .attendance-filters-card {
+    grid-template-columns: 1fr;
+  }
+
+  .attendance-table th,
+  .attendance-table td {
+    font-size: 13px;
+    padding: 10px;
+  }
+}
+
+/* Ultra-small devices (< 250px) */
+@media (max-width: 250px) {
+  .attendance-container h2 {
+    font-size: 16px;
+  }
+
+  .attendance-filters-card {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .attendance-filters-card select,
+  .attendance-filters-card input {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .filter-btn {
+    font-size: 12px;
+    padding: 8px;
+  }
+}
