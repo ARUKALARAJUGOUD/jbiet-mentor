@@ -8,7 +8,7 @@ const api = axios.create({
   // baseURL: "http://localhost:5000",
   // baseURL: "http://192.168.1.150:5000",
     // baseURL: "/api",
-    baseURL:{API},
+    baseURL:"https://jbiet-mentor.onrender.com",
   withCredentials: true
 });
 
