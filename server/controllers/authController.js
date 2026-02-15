@@ -43,7 +43,7 @@ exports.register = async (req, res) => {
         });
       }
 
-      const exists = await User.findOne({ rollNo });
+      const exists = await User.findOne({ rollNo }).lean()
       if (exists) {
         return res.status(400).json({
           message: "Roll number already exists"
@@ -79,7 +79,7 @@ exports.register = async (req, res) => {
         });
       }
 
-      const exists = await User.findOne({ facultyId });
+      const exists = await User.findOne({ facultyId }).lean()
       if (exists) {
         return res.status(400).json({
           message: "Faculty ID already exists"
@@ -144,7 +144,7 @@ exports.login = async (req, res) => {
         { rollNo: userId },
         { facultyId: userId }
       ]
-    }).select("+password");
+    }).select("+password").lean()
 
     if (!user) {
       return res.status(401).json({ message: "Invalid ID or password" });
@@ -204,7 +204,7 @@ exports.refresh = (req, res) => {
 
 /* DASHBOARD */
 exports.dashboard = async (req, res) => {
-  const user = await User.findById(req.user.id).select("-password");
+  const user = await User.findById(req.user.id).select("-password").lean()
   res.json(user);
 };
 
@@ -230,7 +230,7 @@ exports.MarksAdd =   async (req, res) => {
         semester,
         regulation,
         branch
-      });
+      }).lean()
 
       if (!subject) {
         return res.status(400).json({ error: "Invalid subject details" });

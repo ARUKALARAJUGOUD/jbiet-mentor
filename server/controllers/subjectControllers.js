@@ -1,26 +1,13 @@
 const Subject = require("../models/Subject");
-const Marks = require("../models/Marks")
+const Marks = require("../models/Marks");
 /**
  * ADD SUBJECT (Admin / Faculty)
  */
 
-
-
-
-
-
-
-
 exports.addSubject = async (req, res) => {
   try {
-    const {
-      subjectCode,
-      subjectName,
-      regulation,
-      branch,
-      semester,
-      credits
-    } = req.body;
+    const { subjectCode, subjectName, regulation, branch, semester, credits } =
+      req.body;
 
     // Basic validation
     if (
@@ -39,12 +26,13 @@ exports.addSubject = async (req, res) => {
       subjectCode,
       regulation,
       branch,
-      semester
-    });
+      semester,
+    }).lean();
 
     if (existing) {
       return res.status(409).json({
-        message: "Subject already exists for this regulation, branch & semester"
+        message:
+          "Subject already exists for this regulation, branch & semester",
       });
     }
 
@@ -54,18 +42,17 @@ exports.addSubject = async (req, res) => {
       regulation,
       branch,
       semester,
-      credits
+      credits,
     });
 
     res.status(201).json({
       message: "Subject added successfully",
-      subject
+      subject,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 /**
  * UPDATE SUBJECT (Admin only)
@@ -74,40 +61,29 @@ exports.updateSubject = async (req, res) => {
   try {
     const subjectId = req.params.id;
 
-    const {
-      subjectCode,
-      subjectName,
-      regulation,
-      branch,
-      semester,
-      credits
-    } = req.body;
+    const { subjectCode, subjectName, regulation, branch, semester, credits } =
+      req.body;
 
     // Check subject exists
-    const subject = await Subject.findById(subjectId);
+    const subject = await Subject.findById(subjectId).lean();
     if (!subject) {
       return res.status(404).json({ message: "Subject not found" });
     }
 
     // If academic identity is being changed, check duplicate
-    if (
-      subjectCode ||
-      regulation ||
-      branch ||
-      semester
-    ) {
+    if (subjectCode || regulation || branch || semester) {
       const duplicate = await Subject.findOne({
         _id: { $ne: subjectId },
         subjectCode: subjectCode || subject.subjectCode,
         regulation: regulation || subject.regulation,
         branch: branch || subject.branch,
-        semester: semester || subject.semester
-      });
+        semester: semester || subject.semester,
+      }).lean();
 
       if (duplicate) {
         return res.status(409).json({
           message:
-            "Another subject already exists with this code, regulation, branch and semester"
+            "Another subject already exists with this code, regulation, branch and semester",
         });
       }
     }
@@ -124,13 +100,12 @@ exports.updateSubject = async (req, res) => {
 
     res.json({
       message: "Subject updated successfully",
-      subject
+      subject,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 /**
  * DELETE SUBJECT (Admin only)
@@ -139,7 +114,7 @@ exports.deleteSubject = async (req, res) => {
   try {
     const subjectId = req.params.id;
 
-    const subject = await Subject.findById(subjectId);
+    const subject = await Subject.findById(subjectId).lean();
 
     if (!subject) {
       return res.status(404).json({ message: "Subject not found" });
@@ -148,68 +123,12 @@ exports.deleteSubject = async (req, res) => {
     await subject.deleteOne();
 
     res.json({
-      message: "Subject deleted successfully"
+      message: "Subject deleted successfully",
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-
-
-
-
-
-/**
- * @desc    Get subjects by regulation, branch, semester
- * @route   GET /api/subjects
- * @access  Public / Admin
- */
-// exports.getSubjectsByFilter = async (req, res) => {
-//   try {
-//     const { regulation, branch, semester } = req.query;
-
-//     // ✅ Validation
-//     if (!regulation || !branch || !semester) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "regulation, branch and semester are required"
-//       });
-//     }
-
-//     // ✅ Fetch subjects
-//  const query = {};
-// if (regulation) query.regulation = regulation;
-// if (branch) query.branch = branch;
-// if (semester) query.semester = semester;
-
-// const subjects = await Subject.find(query).limit(20)
-
-//       .select("subjectCode subjectName credits semester branch regulation")
-//       .sort({ subjectCode: 1 });
-
-//     // ✅ No subjects found
-//     if (subjects.length === 0) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "No subjects found for given criteria"
-//       });
-//     }
-
-//     res.status(200).json({
-//       success: true,
-//       count: subjects.length,
-//       data: subjects
-//     });
-//   } catch (error) {
-//     console.error("Error fetching subjects:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Server Error"
-//     });
-//   }
-// };
-
-
 
 exports.getSubjectsByFilter = async (req, res) => {
   try {
@@ -226,40 +145,33 @@ exports.getSubjectsByFilter = async (req, res) => {
     const subjects = await Subject.find(query)
       .select("subjectCode subjectName credits semester branch regulation")
       .sort({ createdAt: -1 }) // latest first
-      .limit(25);              // prevent heavy load
+      .limit(25)
+      .lean(); // prevent heavy load
 
     // ✅ Empty is NOT an error
     return res.status(200).json({
       success: true,
       count: subjects.length,
-      data: subjects
+      data: subjects,
     });
-
   } catch (error) {
     console.error("Error fetching subjects:", error);
     res.status(500).json({
       success: false,
-      message: "Server Error"
+      message: "Server Error",
     });
   }
 };
 
-
 exports.getSubjectResultAnalysis = async (req, res) => {
   try {
-    const {
-      regulation,
-      branch,
-      semester,
-      subjectCode,
-      result
-    } = req.query;
+    const { regulation, branch, semester, subjectCode, result } = req.query;
 
     // 🔒 Validation
     if (!regulation || !branch || !semester || !subjectCode || !result) {
       return res.status(400).json({
         success: false,
-        message: "Required filters missing"
+        message: "Required filters missing",
       });
     }
 
@@ -269,8 +181,8 @@ exports.getSubjectResultAnalysis = async (req, res) => {
         $match: {
           semester: Number(semester),
           subjectCode: subjectCode.toUpperCase(),
-          result: result.toUpperCase()
-        }
+          result: result.toUpperCase(),
+        },
       },
 
       /* 2️⃣ Join student */
@@ -279,8 +191,8 @@ exports.getSubjectResultAnalysis = async (req, res) => {
           from: "users",
           localField: "student",
           foreignField: "_id",
-          as: "student"
-        }
+          as: "student",
+        },
       },
 
       /* 3️⃣ Unwind */
@@ -291,9 +203,9 @@ exports.getSubjectResultAnalysis = async (req, res) => {
         $match: {
           "student.regulation": regulation,
           "student.branch": branch,
-          "student.role": "student"
+          "student.role": "student",
           // ❌ DO NOT filter student.semester
-        }
+        },
       },
 
       /* 5️⃣ Final projection */
@@ -310,27 +222,24 @@ exports.getSubjectResultAnalysis = async (req, res) => {
           grade: 1,
           gradePoint: 1,
           credits: 1,
-          result: 1
-        }
-      }
+          result: 1,
+        },
+      },
     ]);
 
     res.status(200).json({
       success: true,
       totalStudents: data.length,
-      students: data
+      students: data,
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: "Server Error"
+      message: "Server Error",
     });
   }
 };
-
-
 
 exports.getSubjectToppers = async (req, res) => {
   try {
@@ -339,14 +248,14 @@ exports.getSubjectToppers = async (req, res) => {
       branch,
       semester,
       subjectCode,
-      limit = 3   // default top 3
+      limit = 3, // default top 3
     } = req.query;
 
     // 🔒 Validation
     if (!regulation || !branch || !semester || !subjectCode) {
       return res.status(400).json({
         success: false,
-        message: "Required filters missing"
+        message: "Required filters missing",
       });
     }
 
@@ -356,8 +265,8 @@ exports.getSubjectToppers = async (req, res) => {
         $match: {
           semester: Number(semester),
           subjectCode: subjectCode.toUpperCase(),
-          result: "PASS" // ❗ toppers must be PASS
-        }
+          result: "PASS", // ❗ toppers must be PASS
+        },
       },
 
       /* 2️⃣ Join Student */
@@ -366,8 +275,8 @@ exports.getSubjectToppers = async (req, res) => {
           from: "users",
           localField: "student",
           foreignField: "_id",
-          as: "student"
-        }
+          as: "student",
+        },
       },
 
       { $unwind: "$student" },
@@ -377,21 +286,21 @@ exports.getSubjectToppers = async (req, res) => {
         $match: {
           "student.regulation": regulation,
           "student.branch": branch,
-          "student.role": "student"
-        }
+          "student.role": "student",
+        },
       },
 
       /* 4️⃣ Sort by performance */
       {
         $sort: {
           totalMarks: -1,
-          gradePoint: -1
-        }
+          gradePoint: -1,
+        },
       },
 
       /* 5️⃣ Limit */
       {
-        $limit: Number(limit)
+        $limit: Number(limit),
       },
 
       /* 6️⃣ Shape Response */
@@ -404,23 +313,21 @@ exports.getSubjectToppers = async (req, res) => {
           subjectName: 1,
           totalMarks: 1,
           grade: 1,
-          gradePoint: 1
-        }
-      }
+          gradePoint: 1,
+        },
+      },
     ]);
 
     res.status(200).json({
       success: true,
       count: toppers.length,
-      toppers
+      toppers,
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: "Server Error"
+      message: "Server Error",
     });
   }
 };
-

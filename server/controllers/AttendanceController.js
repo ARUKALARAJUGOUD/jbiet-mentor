@@ -1,85 +1,9 @@
 const AttendanceSession = require("../models/AttendanceSession")
 const Subject = require("../models/Subject")
 const User = require('../models/User')
-//add the subject details by admin
-// exports.SubjectAdd =  async (req, res) => {
-//   const { subjectCode, subjectName, regulation, branch, semester } = req.body;
-
-//   const subject = await Subject.create({
-//     subjectCode,
-//     subjectName,
-//     regulation,
-//     branch,
-//     semester
-//   });
-
-//   res.status(201).json(subject);
-// };
+const mongoose = require("mongoose");
 
 
-// exports.addAttendence = async (req, res) => {
-//   const {
-//     studentId,
-//     semester,
-//     regulation,
-//     branch,
-//     subjectCode,
-//     date,
-//     fromTime,
-//     toTime,
-//     status
-//   } = req.body;
-
-//   if (fromTime >= toTime) {
-//     return res.status(400).json({ message: "Invalid time range" });
-//   }
-
-//   // 🔎 Correct subject lookup
-//   const subject = await Subject.findOne({
-//     subjectCode: subjectCode.toUpperCase(),
-//     semester,
-//     regulation,
-//     branch
-//   });
-
-//   if (!subject) {
-//     return res.status(400).json({
-//       message: "Invalid subject for this semester, branch and regulation"
-//     });
-//   }
-
-//   // 🔐 Time overlap check
-//   const sessions = await AttendanceSession.find({
-//     student: studentId,
-//     semester,
-//     date
-//   });
-
-//   const isOverlap = sessions.some(s =>
-//     fromTime < s.toTime && toTime > s.fromTime
-//   );
-
-//   if (isOverlap) {
-//     return res.status(400).json({
-//       message: "Attendance already exists for this time slot"
-//     });
-//   }
-
-//   const attendance = await AttendanceSession.create({
-//     student: studentId,
-//     semester,
-//     regulation,
-//     branch,
-//     subjectCode: subject.subjectCode,
-//     subjectName: subject.subjectName, // ✅ 100% correct now
-//     date,
-//     fromTime,
-//     toTime,
-//     status
-//   });
-
-//   res.status(201).json(attendance);
-// };
 
 exports.addAttendence = async (req, res) => {
   try {
@@ -103,7 +27,7 @@ exports.addAttendence = async (req, res) => {
     const student = await User.findOne({
       rollNo: rollNo.toUpperCase(),
       role: "student"
-    });
+    }).lean();
 
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
@@ -115,7 +39,7 @@ exports.addAttendence = async (req, res) => {
       semester,
       regulation,
       branch
-    });
+    }).lean();
 
     if (!subject) {
       return res.status(400).json({
@@ -331,13 +255,55 @@ exports.getAttendenceStudentIdSemester = async (req, res) => {
   };
   
 
+// exports.getStudentPresentClasses = async (req, res) => {
+//   try {
+//     const {
+//       rollNo,
+//       regulation,
+//       branch,
+//       semester,
+//       subjectName
+//     } = req.query;   // 👈 changed here
 
-  // to get the prevoius date  wise attendance by rollno and subject details of subject 
+//     const student = await User.findOne({
+//       rollNo: rollNo.toUpperCase(),
+//       role: "student"
+//     }).lean()
+
+//     if (!student) {
+//       return res.status(404).json({ message: "Student not found" });
+//     }
+
+//     const subject = await Subject.findOne({
+//       subjectName,
+//       regulation,
+//       branch,
+//       semester
+//     }).lean();
+
+//     if (!subject) {
+//       return res.status(404).json({ message: "Subject not found" });
+//     }
+
+//     const attendanceList = await AttendanceSession.find({
+//       student: student._id,
+//       subjectCode: subject.subjectCode,
+//       semester,
+//       status: "PRESENT"
+//     })
+//       .select("date fromTime toTime -_id")
+//       .sort({ date: -1 });
+
+//     res.json(attendanceList);
+
+//   } catch (err) {
+//     res.status(500).json({ message: "Server Error" });
+//   }
+// };
 
 
-//   const User = require("../models/User");
-// const Subject = require("../models/Subject");
-// const Attendance = require("../models/Attendance");
+
+
 exports.getStudentPresentClasses = async (req, res) => {
   try {
     const {
@@ -346,41 +312,57 @@ exports.getStudentPresentClasses = async (req, res) => {
       branch,
       semester,
       subjectName
-    } = req.query;   // 👈 changed here
+    } = req.query;
 
+    if (!rollNo || !regulation || !branch || !semester || !subjectName) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // ✅ 1️⃣ Fetch only required student fields
     const student = await User.findOne({
       rollNo: rollNo.toUpperCase(),
       role: "student"
-    });
+    })
+      .select("_id")
+      .lean();
 
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
     }
 
+    // ✅ 2️⃣ Fetch only subjectCode (no full subject document)
     const subject = await Subject.findOne({
       subjectName,
       regulation,
       branch,
-      semester
-    });
+      semester: Number(semester)
+    })
+      .select("subjectCode")
+      .lean();
 
     if (!subject) {
       return res.status(404).json({ message: "Subject not found" });
     }
 
+    // ✅ 3️⃣ Optimized attendance query
     const attendanceList = await AttendanceSession.find({
       student: student._id,
       subjectCode: subject.subjectCode,
-      semester,
+      semester: Number(semester),
       status: "PRESENT"
     })
       .select("date fromTime toTime -_id")
-      .sort({ date: -1 });
+      .sort({ date: -1 })
+      .lean();
 
-    res.json(attendanceList);
+    res.json({
+      success: true,
+      totalPresentClasses: attendanceList.length,
+      attendance: attendanceList
+    });
 
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Server Error" });
   }
 };
-

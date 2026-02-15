@@ -1,80 +1,74 @@
-
-
 const mongoose = require("mongoose");
 
 const attendanceSchema = new mongoose.Schema(
   {
-    // ===== STUDENT =====
     student: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true
     },
 
-    // ===== SUBJECT =====
     subjectCode: {
       type: String,
       required: true,
       uppercase: true,
-      index: true
     },
+
     subjectName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
+
     semester: {
       type: Number,
       required: true,
       min: 1,
       max: 8,
-      index: true
     },
 
-    // ===== DATE & TIME =====
     date: {
       type: Date,
       required: true,
-      index: true
     },
 
     fromTime: {
-      type: String, // "09:00"
-      required: true
+      type: String,
+      required: true,
     },
 
     toTime: {
-      type: String, // "10:00"
-      required: true
+      type: String,
+      required: true,
     },
 
-    // ===== ATTENDANCE STATUS =====
     status: {
       type: String,
       enum: ["PRESENT", "ABSENT"],
-      required: true
-    }
+      required: true,
+    },
   },
-  {
-    timestamps: true
-  }
+  { timestamps: true },
 );
 
-/**
- * 🚫 Prevent duplicate attendance
- * Same student cannot have attendance
- * at the same date + same time slot
- * (even if subject is different)
- */
+attendanceSchema.index({
+  student: 1,
+  semester: 1,
+  subjectCode: 1,
+  status: 1,
+});
+
+/* 🔥 1️⃣ Main student attendance query */
+attendanceSchema.index({ student: 1, semester: 1, date: 1 });
+attendanceSchema.index({ student: 1, date: 1 });
+
+/* 🔥 2️⃣ Prevent duplicate attendance */
 attendanceSchema.index(
-  {
-    student: 1,
-    date: 1,
-    fromTime: 1,
-    toTime: 1
-  },
-  { unique: true }
+  { student: 1, date: 1, fromTime: 1, toTime: 1 },
+  { unique: true },
 );
+
+/* 🔥 3️⃣ Optional: date-based admin filtering */
+attendanceSchema.index({ date: 1 });
 
 module.exports = mongoose.model("Attendance", attendanceSchema);

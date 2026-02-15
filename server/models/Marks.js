@@ -76,6 +76,10 @@ marksSchema.pre("save", function (next) {
   next();
 });
 
+/* 🔥 Main performance index (MOST IMPORTANT) */
+marksSchema.index({ student: 1, semester: 1 });
+
+
 /* One subject per student per semester */
 marksSchema.index(
   { student: 1, subjectCode: 1, semester: 1 },

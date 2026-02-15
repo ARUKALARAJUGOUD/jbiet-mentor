@@ -30,48 +30,25 @@ router.post(
 MarksAdd
 );
 
-
-//auto  values of regulation and branch by roll no
-// router.get(
-//   "/student/basic/:rollNo",
-//   auth,
-//   authorizeRoles("admin","faculty"),
-//   async (req, res) => {
-//     try {
-//       const { rollNo } = req.params;
-
-//       const student = await User.findOne(
-//         { rollNo, role: "student" },
-//         "regulation branch"
-//       );
-
-//       if (!student) {
-//         return res.status(404).json({
-//           error: "Student not found"
-//         });
-//       }
-
-//       res.status(200).json({
-//         regulation: student.regulation,
-//         branch: student.branch
-//       });
-//     } catch (err) {
-//       res.status(500).json({ error: err.message });
-//     }
-//   }
-// );
-
-
-//fetch student details with semester details 
 router.get("/getMarks/student/semester-wise/:studentId/:semester",auth,authorizeRoles("admin","faculty","student"),
 async (req, res) => {
   try {
     const { studentId, semester } = req.params;
 
+    // const marks = await Marks.find({
+    //   student: studentId,
+    //   semester
+    // }).populate("student", "name rollNo branch");
+
+
     const marks = await Marks.find({
-      student: studentId,
-      semester
-    }).populate("student", "name rollNo branch");
+  student: studentId,
+  semester
+})
+.select("subjectCode subjectName credits internalMarks externalMarks totalMarks grade gradePoint result")
+.populate("student", "name rollNo branch")
+.lean();
+
 
 
     res.json(marks);
@@ -81,16 +58,5 @@ async (req, res) => {
 }
 )
 
-//delete the subject 
-// router.delete("/marks/delete-subject/:studentId/:semester/:subjectCode",auth,authorizeRoles("admin"),deleteSubject)
-
-//get marks for student dashboard
-// router.get("/my-marks",auth,async (req, res) => {
-//   const StudentId = req.user.id;
-//   console.log(StudentId)
-//   const marks = await Marks.find({student:StudentId});
-//   res.send(marks)
-//   // res.json(marks[0].subjects[0]);
-// });
 
 module.exports = router;

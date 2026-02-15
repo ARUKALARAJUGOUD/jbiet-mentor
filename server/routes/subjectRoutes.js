@@ -49,7 +49,9 @@ router.get(
         regulation,
         branch,
         semester,
-      }).select("subjectCode subjectName credits");
+      })
+        .select("subjectCode subjectName credits")
+        .lean();
 
       res.status(200).json(subjects);
     } catch (err) {

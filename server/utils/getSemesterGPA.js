@@ -4,7 +4,7 @@ exports.getSemesterGPA = async (req, res) => {
   const records = await Marks.find({
     student: req.user.id,
     semester
-  });
+  }).lean();
 
   let totalCredits = 0;
   let weightedPoints = 0;

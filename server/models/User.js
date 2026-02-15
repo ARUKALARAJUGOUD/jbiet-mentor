@@ -177,6 +177,9 @@ userSchema.index(
   { name: "faculty_filter_index" },
 );
 
+
+userSchema.index({ rollNo: 1, role: 1 });
+
 // Unique identifiers
 userSchema.index(
   { rollNo: 1 },

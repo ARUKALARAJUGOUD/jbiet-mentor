@@ -3,55 +3,151 @@
 const User = require("../models/User");
 const Marks = require("../models/Marks");
 const Subject = require("../models/Subject");
+const mongoose = require("mongoose");
+
 
 
 // GET /admin/students
- exports.getStudents = async (req, res) => {
+//  exports.getStudents = async (req, res) => {
+//   try {
+//     const { regulation, year, branch, rollNo, page = 1, limit = 20 } = req.query;
+
+//     const query = { role: "student" };
+
+//     if (regulation) query.regulation = regulation;
+//     if (year) query.year = Number(year);
+//     if (branch) query.branch = branch;
+//     if (rollNo) query.rollNo = new RegExp("^" + rollNo, "i");
+
+//     const students = await User.find(query)
+//       .select("name rollNo branch regulation year")
+//       .skip((page - 1) * limit)
+//       .limit(Number(limit))
+//       .sort({ rollNo: 1 })
+//       .lean();
+//     const total = await User.countDocuments(query);
+
+//     res.json({ total, students });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// };
+
+
+exports.getStudents = async (req, res) => {
   try {
-    const { regulation, year, branch, rollNo, page = 1, limit = 20 } = req.query;
+    let {
+      regulation,
+      year,
+      branch,
+      rollNo,
+      page = 1,
+      limit = 20
+    } = req.query;
+
+    page = Number(page);
+    limit = Number(limit);
 
     const query = { role: "student" };
 
     if (regulation) query.regulation = regulation;
     if (year) query.year = Number(year);
     if (branch) query.branch = branch;
-    if (rollNo) query.rollNo = new RegExp("^" + rollNo, "i");
 
-    const students = await User.find(query)
-      .select("name rollNo branch regulation year")
-      .skip((page - 1) * limit)
-      .limit(Number(limit))
-      .sort({ rollNo: 1 });
+    // ⚡ Optimized rollNo search (prefix only)
+    if (rollNo) {
+      query.rollNo = { $regex: "^" + rollNo.toUpperCase() };
+    }
 
-    const total = await User.countDocuments(query);
+    // 🔥 Run find + count in parallel
+    const [students, total] = await Promise.all([
+      User.find(query)
+        .select("name rollNo branch regulation year")
+        .sort({ rollNo: 1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean(),
 
-    res.json({ total, students });
+      User.countDocuments(query)
+    ]);
+
+    res.json({
+      success: true,
+      total,
+      page,
+      pages: Math.ceil(total / limit),
+      students
+    });
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
+
+
+
 // Get Student by Id 
-exports.getStudentById =  async (req, res) => {
+// exports.getStudentById =  async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     let student;
+
+//     // If MongoDB ObjectId
+//     if (id.match(/^[0-9a-fA-F]{24}$/)) {
+//       student = await User.findOne({
+//         _id: id,
+//         role: "student",
+//       }).select("-password").lean();
+//     }
+//     // Otherwise treat it as Roll Number
+//     else {
+//       student = await User.findOne({
+//         rollNo: id.toUpperCase(),
+//         role: "student",
+//       }).select("-password").lean()
+//     }
+
+//     if (!student) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Student not found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       studentInfo: student,
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({
+//       success: false,
+//       message: "Server error",
+//     });
+//   }
+// }
+
+
+
+
+exports.getStudentById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    let student;
+    let query = { role: "student" };
 
-    // If MongoDB ObjectId
-    if (id.match(/^[0-9a-fA-F]{24}$/)) {
-      student = await User.findOne({
-        _id: id,
-        role: "student",
-      }).select("-password");
+    // ✅ Faster ObjectId validation
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      query._id = id;
+    } else {
+      query.rollNo = id.toUpperCase();
     }
-    // Otherwise treat it as Roll Number
-    else {
-      student = await User.findOne({
-        rollNo: id.toUpperCase(),
-        role: "student",
-      }).select("-password");
-    }
+
+    const student = await User.findOne(query)
+      .select("name rollNo branch regulation year semester email") // select only needed fields
+      .lean();
 
     if (!student) {
       return res.status(404).json({
@@ -64,6 +160,7 @@ exports.getStudentById =  async (req, res) => {
       success: true,
       studentInfo: student,
     });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -71,7 +168,7 @@ exports.getStudentById =  async (req, res) => {
       message: "Server error",
     });
   }
-}
+};
 
 
 
@@ -87,7 +184,7 @@ exports.getFaculty = async (req, res) => {
 
     const faculty = await User.find(query)
      // // .select("name rollNo facultyId")
-      .sort({ name: 1 });
+      .sort({ name: 1 }).lean();
 
     res.json(faculty);
   } catch (err) {
@@ -105,7 +202,7 @@ exports.deleteFaculty = async (req, res) => {
       return res.status(400).json({ message: "Faculty ID is required" });
     }
 
-    const faculty = await User.findById(id);
+    const faculty = await User.findById(id).lean();
 
     if (!faculty) {
       return res.status(404).json({ message: "Faculty not found" });
@@ -402,22 +499,3 @@ exports.getAcademicAnalyticsTable = async (req, res) => {
 };
 
 
-
-
-//fetch the student details for updating 
-// exports.getStudentById = async (req, res) => {
-//   try {
-//     const student = await User.findOne({
-//       _id: req.params.id,
-//       role: "student"
-//     }).select("-password");
-
-//     if (!student) {
-//       return res.status(404).json({ message: "Student not found" });
-//     }
-
-//     res.json(student);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };

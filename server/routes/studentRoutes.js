@@ -31,7 +31,7 @@ router.get("/academics/:rollNo/summary", async (req, res) => {
     const student = await User.findOne({
       rollNo: rollNo.toUpperCase(),
       role: "student",
-    });
+    }).lean();
 
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
@@ -39,7 +39,7 @@ router.get("/academics/:rollNo/summary", async (req, res) => {
 
     const marks = await Marks.find({ student: student._id }).sort({
       semester: 1,
-    });
+    }).lean();
 
     const semesterMap = {};
 
@@ -138,7 +138,7 @@ router.get("/academics/:rollNo/backlogs", async (req, res) => {
     const student = await User.findOne({
       rollNo: rollNo.toUpperCase(),
       role: "student",
-    });
+    }).lean();
 
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
@@ -147,7 +147,7 @@ router.get("/academics/:rollNo/backlogs", async (req, res) => {
     const backlogs = await Marks.find({
       student: student._id,
       grade: "F",
-    }).sort({ semester: 1 });
+    }).sort({ semester: 1 }).lean();
 
     const semesterWiseBacklogs = {};
 
@@ -189,43 +189,5 @@ router.get("/academics/:rollNo/backlogs", async (req, res) => {
 // fetching the day wise attendence of  a student
 // ✅ Student attendance (roll no based)
 router.get("/getDayWiseAttendence/:rollNo", getAttendanceByRollNo);
-
-//useful in further
-// router.get(
-//   "/academics/:rollNo/semester/:semester",
-//   // auth,
-//   // authorizeRoles("admin", "faculty", "student"),
-//   async (req, res) => {
-//     try {
-//       const { rollNo, semester } = req.params;
-
-//       const student = await User.findOne({
-//         rollNo: rollNo.toUpperCase(),
-//         role: "student",
-//       });
-
-//       if (!student) {
-//         return res.status(404).json({ message: "Student not found" });
-//       }
-
-//       const marks = await Marks.find({
-//         student: student._id,
-//         semester: Number(semester),
-//       });
-
-//       res.json({
-//         student: {
-//           name: student.name,
-//           rollNo: student.rollNo,
-//           branch: student.branch,
-//         },
-//         semester: Number(semester),
-//         marks,
-//       });
-//     } catch (err) {
-//       res.status(500).json({ error: err.message });
-//     }
-//   },
-// );
 
 module.exports = router;
