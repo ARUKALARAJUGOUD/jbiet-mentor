@@ -41,11 +41,14 @@ export default function AdminLayout() {
   useEffect(() => {
     if (!auth?.accessToken) return;
 
+   
+
     api.get("/auth/dashboard")
       .then(res => setData(res.data))
       .catch(err => console.error(err));
   }, [auth?.accessToken]);
-
+ console.log(auth);
+ console.log(data);
   return (
     <div className="admin-dashboard">
 

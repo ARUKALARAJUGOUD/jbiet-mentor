@@ -333,96 +333,165 @@ exports.getStudentResult = async (req, res) => {
 
 
 
-exports.getSemesterWiseResult = async (req, res) => {
-  try {
-    const { rollNo } = req.params;
+// exports.getSemesterWiseResult = async (req, res) => {
+//   try {
+//     const { rollNo } = req.params;
 
-    // 1️⃣ Find student
-    const student = await User.findOne({
-      rollNo: rollNo.toUpperCase(),
-      role: "student"
-    }).lean()
+//     // 1️⃣ Find student
+//     const student = await User.findOne({
+//       rollNo: rollNo.toUpperCase(),
+//       role: "student"
+//     });
 
-    if (!student) {
-      return res.status(404).json({ message: "Student not found" });
-    }
+//     if (!student) {
+//       return res.status(404).json({ message: "Student not found" });
+//     }
 
-    // 2️⃣ Aggregate semester-wise data
-    const semesterData = await Marks.aggregate([
-      {
-        $match: {
-          student: student._id
-        }
-      },
-      {
-        $group: {
-          _id: "$semester",
+//     // 2️⃣ Aggregate semester-wise data
+//     const semesterData = await Marks.aggregate([
+//       {
+//         $match: {
+//           student: student._id
+//         }
+//       },
+//       {
+//         $group: {
+//           _id: "$semester",
 
-          totalCredits: { $sum: "$credits" },
+//           totalCredits: { $sum: "$credits" },
 
-          securedCredits: {
-            $sum: {
-              $cond: [{ $ne: ["$grade", "F"] }, "$credits", 0]
-            }
-          },
+//           securedCredits: {
+//             $sum: {
+//               $cond: [{ $ne: ["$grade", "F"] }, "$credits", 0]
+//             }
+//           },
 
-          totalGradePoints: {
-            $sum: {
-              $multiply: ["$credits", "$gradePoint"]
-            }
-          }
-        }
-      },
-      {
-        $addFields: {
-          sgpa: {
-            $round: [
-              { $divide: ["$totalGradePoints", "$totalCredits"] },
-              2
-            ]
-          }
-        }
-      },
-      {
-        $sort: { _id: 1 }
-      }
-    ]);
+//           totalGradePoints: {
+//             $sum: {
+//               $multiply: ["$credits", "$gradePoint"]
+//             }
+//           }
+//         }
+//       },
+//       {
+//         $addFields: {
+//           sgpa: {
+//             $round: [
+//               { $divide: ["$totalGradePoints", "$totalCredits"] },
+//               2
+//             ]
+//           }
+//         }
+//       },
+//       {
+//         $sort: { _id: 1 }
+//       }
+//     ]);
 
-    // 3️⃣ Calculate CGPA cumulatively
-    let cumulativeCredits = 0;
-    let cumulativeGradePoints = 0;
+//     // 3️⃣ Calculate CGPA cumulatively
+//     let cumulativeCredits = 0;
+//     let cumulativeGradePoints = 0;
 
-    const result = semesterData.map((sem) => {
-      cumulativeCredits += sem.totalCredits;
-      cumulativeGradePoints += sem.totalGradePoints;
+//     const result = semesterData.map((sem) => {
+//       cumulativeCredits += sem.totalCredits;
+//       cumulativeGradePoints += sem.totalGradePoints;
 
-      return {
-        semester: sem._id,
-        totalCredits: sem.totalCredits,
-        securedCredits: sem.securedCredits,
-        sgpa: sem.sgpa,
-        cgpa: Number(
-          (cumulativeGradePoints / cumulativeCredits).toFixed(2)
-        )
-      };
-    });
+//       return {
+//         semester: sem._id,
+//         totalCredits: sem.totalCredits,
+//         securedCredits: sem.securedCredits,
+//         sgpa: sem.sgpa,
+//         cgpa: Number(
+//           (cumulativeGradePoints / cumulativeCredits).toFixed(2)
+//         )
+//       };
+//     });
 
-    res.json({
-      student: {
-        name: student.name,
-        rollNo: student.rollNo,
-        branch: student.branch,
-        regulation: student.regulation
-      },
-      semesters: result
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+//     res.json({
+//       student: {
+//         name: student.name,
+//         rollNo: student.rollNo,
+//         branch: student.branch,
+//         regulation: student.regulation
+//       },
+//       semesters: result
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 
-//get the student semester wise => subject wise result 
+// get the student semester wise => subject wise result 
+
+
+
+// exports.getSemesterWiseResult = async (req, res) => {
+//   try {
+//     const { rollNo } = req.params;
+//     if (!rollNo) return res.status(400).json({ message: "rollNo is required" });
+
+//     const student = await User.findOne({ rollNo: rollNo.toUpperCase(), role: "student" });
+//     if (!student) return res.status(404).json({ message: "Student not found" });
+
+//     const semesterData = await Marks.aggregate([
+//       { $match: { student: student._id } },
+//       {
+//         $group: {
+//           _id: "$semester",
+//           totalCredits: { $sum: { $ifNull: ["$credits", 0] } },
+//           securedCredits: { $sum: { $cond: [{ $ne: ["$grade", "F"] }, { $ifNull: ["$credits", 0] }, 0] } },
+//           totalGradePoints: { $sum: { $multiply: [{ $ifNull: ["$credits", 0] }, { $ifNull: ["$gradePoint", 0] }] } }
+//         }
+//       },
+//       {
+//         $addFields: {
+//           sgpa: {
+//             $cond: [
+//               { $eq: ["$totalCredits", 0] },
+//               0,
+//               { $round: [{ $divide: ["$totalGradePoints", "$totalCredits"] }, 2] }
+//             ]
+//           }
+//         }
+//       },
+//       { $sort: { _id: 1 } }
+//     ]);
+
+//     let cumulativeCredits = 0;
+//     let cumulativeGradePoints = 0;
+
+//     const result = semesterData.map((sem) => {
+//       cumulativeCredits += sem.totalCredits;
+//       cumulativeGradePoints += sem.totalGradePoints;
+//       const cgpa = cumulativeCredits ? Number((cumulativeGradePoints / cumulativeCredits).toFixed(2)) : 0;
+
+//       return {
+//         semester: sem._id,
+//         totalCredits: sem.totalCredits,
+//         securedCredits: sem.securedCredits,
+//         sgpa: sem.sgpa,
+//         cgpa
+//       };
+//     });
+
+//     res.json({
+//       student: {
+//         name: student.name,
+//         rollNo: student.rollNo,
+//         branch: student.branch,
+//         regulation: student.regulation
+//       },
+//       semesters: result
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
+
+
 
 exports.getSemesterMarks = async (req, res) => {
   try {
@@ -431,8 +500,7 @@ exports.getSemesterMarks = async (req, res) => {
     const student = await User.findOne({
       rollNo: rollNo.toUpperCase(),
       role: "student"
-    }).lean();
-
+    })
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
     }
