@@ -4,78 +4,15 @@ const Attendance = require("../models/AttendanceSession")
 const Marks = require("../models/Marks")
 
 
-// exports.getStudentWithCurrentSubjects = async (req, res) => {
-//   try {
-//     const { rollNo } = req.params;
-
-//     // 1️⃣ Find student
-//     const student = await User.findOne({
-//       rollNo: rollNo.toUpperCase(),
-//       role: "student"
-//     }).select("-password").lean();
-
-//     if (!student) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Student not found"
-//       });
-//     }
-
-//     // 2️⃣ Extract required academic details
-//     const { regulation, branch, semester } = student;
-
-//     // 3️⃣ Fetch subjects for current semester
-//     const subjects = await Subject.find({
-//       regulation,
-//       branch,
-//       semester
-//     }).sort({ subjectCode: 1 }).lean();
-
-//     // 4️⃣ Final response
-//     res.status(200).json({
-//       success: true,
-//       student: {
-//         name: student.name,
-//         rollNo: student.rollNo,
-//         branch: student.branch,
-//         regulation: student.regulation,
-//         year: student.year,
-//         semester: student.semester,
-//         academicStatus: student.academicStatus
-//       },
-//       subjects
-//     });
-
-
-//     console.log(student.branch,student.branch,student.semester)
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Server error"
-//     });
-//   }
-// };
-
-
 exports.getStudentWithCurrentSubjects = async (req, res) => {
   try {
     const { rollNo } = req.params;
 
-    if (!rollNo) {
-      return res.status(400).json({
-        success: false,
-        message: "Roll number is required"
-      });
-    }
-
-    // ✅ 1️⃣ Fetch only required student fields
+    // 1️⃣ Find student
     const student = await User.findOne({
       rollNo: rollNo.toUpperCase(),
       role: "student"
-    })
-      .select("name rollNo branch regulation year semester academicStatus")
-      .lean();
+    }).select("-password");
 
     if (!student) {
       return res.status(404).json({
@@ -84,25 +21,33 @@ exports.getStudentWithCurrentSubjects = async (req, res) => {
       });
     }
 
+    // 2️⃣ Extract required academic details
     const { regulation, branch, semester } = student;
 
-    // ✅ 2️⃣ Fetch only required subject fields
+    // 3️⃣ Fetch subjects for current semester
     const subjects = await Subject.find({
       regulation,
       branch,
-      semester: Number(semester)
-    })
-      .select("subjectCode subjectName credits -_id")
-      .sort({ subjectCode: 1 })
-      .lean();
+      semester
+    }).sort({ subjectCode: 1 }).lean();
 
-    // ✅ 3️⃣ Final response
+    // 4️⃣ Final response
     res.status(200).json({
       success: true,
-      student,
+      student: {
+        name: student.name,
+        rollNo: student.rollNo,
+        branch: student.branch,
+        regulation: student.regulation,
+        year: student.year,
+        semester: student.semester,
+        academicStatus: student.academicStatus
+      },
       subjects
     });
 
+
+    console.log(student.branch,student.branch,student.semester)
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -111,6 +56,61 @@ exports.getStudentWithCurrentSubjects = async (req, res) => {
     });
   }
 };
+
+
+// exports.getStudentWithCurrentSubjects = async (req, res) => {
+//   try {
+//     const { rollNo } = req.params;
+
+//     if (!rollNo) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Roll number is required"
+//       });
+//     }
+
+//     // ✅ 1️⃣ Fetch only required student fields
+//     const student = await User.findOne({
+//       rollNo: rollNo.toUpperCase(),
+//       role: "student"
+//     })
+//       .select("name rollNo branch regulation year semester academicStatus")
+//       .lean();
+
+//     if (!student) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Student not found"
+//       });
+//     }
+
+//     const { regulation, branch, semester } = student;
+
+//     // ✅ 2️⃣ Fetch only required subject fields
+//     const subjects = await Subject.find({
+//       regulation,
+//       branch,
+//       semester: Number(semester)
+//     })
+//       .select("subjectCode subjectName credits -_id")
+//       .sort({ subjectCode: 1 })
+//       .lean();
+
+//     // ✅ 3️⃣ Final response
+//     res.status(200).json({
+//       success: true,
+//       student,
+//       subjects
+//     });
+
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Server error"
+//     });
+//   }
+// };
 
 
 
@@ -123,8 +123,7 @@ exports.getCurrentSemesterAttendance = async (req, res) => {
       rollNo: rollNo.toUpperCase(),
       role: "student"
     })
-      .select("_id semester")
-      .lean();
+      .select("_id semester");
 
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
@@ -273,7 +272,7 @@ exports.getStudentResult = async (req, res) => {
       role: "student"
     })
       .select("_id name rollNo regulation branch")
-      .lean();
+     
 
     if (!student) {
       return res.status(404).json({

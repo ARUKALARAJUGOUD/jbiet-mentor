@@ -146,8 +146,7 @@ exports.getStudentById = async (req, res) => {
     }
 
     const student = await User.findOne(query)
-      .select("name rollNo branch regulation year semester email") // select only needed fields
-      .lean();
+      .select("name rollNo branch regulation year semester email"); // select only needed fields
 
     if (!student) {
       return res.status(404).json({

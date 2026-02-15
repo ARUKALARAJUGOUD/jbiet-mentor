@@ -1,18 +1,16 @@
-
 import axios from "axios";
 
-
-const API = process.env.REACT_APP_API_URL;
+// const API = process.env.REACT_APP_API_URL;
 
 const api = axios.create({
-  // baseURL: "http://localhost:5000",
+  // baseURL: "http://localhost:3000",
   // baseURL: "http://192.168.1.150:5000",
-    // baseURL: "/api",
-    baseURL:"https://jbiet-mentor.onrender.com",
-  withCredentials: true
+  // baseURL: "/api",
+  baseURL: "https://jbiet-mentor.onrender.com",
+  withCredentials: true,
 });
 
-api.interceptors.request.use(config => {
+api.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -21,8 +19,8 @@ api.interceptors.request.use(config => {
 });
 
 api.interceptors.response.use(
-  res => res,
-  async error => {
+  (res) => res,
+  async (error) => {
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -43,7 +41,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

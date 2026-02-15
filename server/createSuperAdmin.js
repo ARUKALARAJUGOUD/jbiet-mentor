@@ -15,9 +15,10 @@ app.use(cookieParser());
 app.use(express.urlencoded({extended:true}))
 
 app.use(cors({
-  origin: {API},
+  origin: [{API}],
   credentials: true
 }));
+// "http://localhost:3000"]
  
 
 
