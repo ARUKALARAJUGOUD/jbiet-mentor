@@ -44,10 +44,13 @@ app.use("/students",require("./routes/studentRoutes"))
 
 
 // deploying 
-const path = require("path");
 
+const path = require("path");
+// Serve static files
 app.use(express.static(path.join(__dirname, "../client/build")));
-app.get("/*", (req, res) => {
+
+// Catch all handler (React routing support)
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });
 
