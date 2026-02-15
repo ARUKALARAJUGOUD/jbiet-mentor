@@ -20,8 +20,9 @@ app.use(compression());
 
 app.use(cors({
   origin: [
-    "http://localhost:3000",
-    "http://192.168.1.150:3000"
+    // "http://localhost:3000",
+    // "http://192.168.1.150:3000"
+"https://jbiet-mentor.onrender.com"
   ],
 
   credentials: true
@@ -50,7 +51,7 @@ const path = require("path");
 app.use(express.static(path.join(__dirname, "../client/build")));
 
 // Catch all handler (React routing support)
-app.use((req, res) => {
+app.use("*",(req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });
 
