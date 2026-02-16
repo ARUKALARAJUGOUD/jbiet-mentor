@@ -20,7 +20,7 @@ app.use(compression());
 
 app.use(cors({
   origin: [
-    "http://localhost:3001",
+    "http://localhost:3000",
     // "http://192.168.1.150:3000"
 "https://jbiet-mentor.onrender.com"
   ],

@@ -61,7 +61,7 @@ export default function DayWiseAttendance({ studentId }) {
             Search by Date
             <input
               type="date"
-              value={searchDate}
+              value={searchDate} placeholder="Date"
               onChange={e => {
                 setSearchDate(e.target.value);
                 setSelectedDate(null);

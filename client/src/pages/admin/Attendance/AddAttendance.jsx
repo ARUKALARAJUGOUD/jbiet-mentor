@@ -170,33 +170,42 @@ export default function AddAttendance() {
           </div>
 
           <div className="form-group">
-            <input
-              type="date"
-              name="date"
-              value={form.date}
-              onChange={handleChange}
-              required
-            />
+            <label>
+              choose Date
+              <input
+                type="date"
+                name="date"
+                value={form.date}
+                onChange={handleChange}
+                required
+              />
+            </label>
           </div>
 
           <div className="form-group">
-            <input
-              type="time"
-              name="fromTime"
-              value={form.fromTime}
-              onChange={handleChange}
-              required
-            />
+            <label>
+              from time
+              <input
+                type="time"
+                name="fromTime"
+                value={form.fromTime}
+                onChange={handleChange}
+                required
+              />
+            </label>
           </div>
 
           <div className="form-group">
-            <input
-              type="time"
-              name="toTime"
-              value={form.toTime}
-              onChange={handleChange}
-              required
-            />
+            <label>
+              to time
+              <input
+                type="time"
+                name="toTime"
+                value={form.toTime}
+                onChange={handleChange}
+                required
+              />
+            </label>
           </div>
 
           <div className="form-group">

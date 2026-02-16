@@ -38,7 +38,7 @@ const AttendanceFilter = ({ onApply }) => {
         <label>Start Date</label>
         <input
           type="date"
-          value={startDate}
+          value={startDate} placeholder="start Date"
           onChange={e => setStartDate(e.target.value)}
         />
       </div>
@@ -47,7 +47,7 @@ const AttendanceFilter = ({ onApply }) => {
         <label>End Date</label>
         <input
           type="date"
-          value={endDate}
+          value={endDate} placeholder="End Date"
           onChange={e => setEndDate(e.target.value)}
         />
       </div>
