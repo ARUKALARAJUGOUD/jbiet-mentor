@@ -64,7 +64,7 @@ connectDB()
 
 // app.listen(5000, "0.0.0.0", () => console.log("Server running"));
 
-const PORT =  5000;
+const PORT =  process.env.PORT || 5000;
 // process.env.PORT || process.env.PORT || 
 
 app.listen(PORT, () => { 
