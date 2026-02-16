@@ -163,6 +163,7 @@ export default function AddSubject() {
               name="credits"
               min="0"
               max="15"
+              step= "any"
               value={formData.credits}
               onChange={handleChange}
             />
