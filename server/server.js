@@ -20,7 +20,7 @@ app.use(compression());
 
 app.use(cors({
   origin: [
-    "http://localhost:3000",
+    "http://localhost:3001",
     // "http://192.168.1.150:3000"
 "https://jbiet-mentor.onrender.com"
   ],
@@ -40,20 +40,21 @@ app.use("/subjects", require("./routes/subjectRoutes"));
 app.use("/topper", require("./routes/topperRoutes"));
 
 //student dashboard 
-app.use("/students",require("./routes/studentRoutes"))
+app.use("/students",require("./routes/studentRoutes"));
 
-
+// app.use("/delete-data",require("./routes/DeleteDataRoutes"))
+app.use("/data",require("./routes/DeleteAndGetDataRoutes"));
 
 // deploying 
 
-const path = require("path");
+// const path = require("path");
 // Serve static files
-app.use(express.static(path.join(__dirname, "../client/build")));
+// app.use(express.static(path.join(__dirname, "../client/build")));
 
 // Catch all handler (React routing support)
-app.use("*",(req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build/index.html"));
-});
+// app.use("*",(req, res) => {
+//   res.sendFile(path.join(__dirname, "../client/build/index.html"));
+// });
 
 
 
@@ -63,7 +64,7 @@ connectDB()
 
 // app.listen(5000, "0.0.0.0", () => console.log("Server running"));
 
-const PORT = process.env.PORT || 5000;
+const PORT =  5000;
 // process.env.PORT || process.env.PORT || 
 
 app.listen(PORT, () => { 

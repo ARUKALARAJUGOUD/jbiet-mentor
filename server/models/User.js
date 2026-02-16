@@ -125,7 +125,19 @@ const userSchema = new mongoose.Schema(
     // ===== FACULTY DETAILS ONLY =====
     department: {
       type: String,
-      enum: ["CSE", "ECE", "EEE", "MECH", "CIVIL", "IT"],
+      enum: [
+        "AI&DS",
+        "AI&ML",
+        "CE",
+        "CSE",
+        "CSE(AI&ML)",
+        "CSE(DS)",
+        "ECE",
+        "ECM",
+        "EEE",
+        "IT",
+        "ME",
+      ],
       required: function () {
         return this.role === "faculty";
       },
@@ -176,7 +188,6 @@ userSchema.index(
   },
   { name: "faculty_filter_index" },
 );
-
 
 userSchema.index({ rollNo: 1, role: 1 });
 

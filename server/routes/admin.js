@@ -32,13 +32,6 @@ router.put(
   updateStudentById,
 );
 
-// //for fetch the student details to update
-// router.get("/student/:id",auth,authorizeRoles("admin","faculty"), getStudentById);
-
-//delete the faculty
-// controllers/admin/facultyController.js
-// const Faculty = require("../../models/Faculty");
-
 // delete the faculty
 router.delete("/faculty/:id", auth, authorizeRoles("admin"), deleteFaculty);
 

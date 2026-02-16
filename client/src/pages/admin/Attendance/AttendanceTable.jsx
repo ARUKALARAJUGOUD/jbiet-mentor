@@ -1,5 +1,10 @@
+import { saveAs } from "file-saver";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { useCallback, useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 import api from "../../../api/api";
+
 import "../../../css/attendance/AttendanceTable.css";
 const AttendanceTable = () => {
   const [filters, setFilters] = useState({
@@ -56,6 +61,94 @@ const AttendanceTable = () => {
       setLoading(false);
     }
   }, [filters]); // ✅ depends on filters
+  //  download the attendance as pdf and xlxs
+  const downloadPDF = () => {
+    if (students.length === 0) {
+      alert("No data to export");
+      return;
+    }
+
+    const doc = new jsPDF();
+
+    const currentDate = new Date().toLocaleString();
+
+    // 🔹 Title
+    doc.setFontSize(16);
+    doc.text("STUDENT ATTENDANCE REPORT", 14, 15);
+
+    // 🔹 Filters Info
+    doc.setFontSize(11);
+    doc.text(
+      `Regulation: ${filters.regulation}   |   Branch: ${filters.branch}   |   Semester: ${filters.semester}`,
+      14,
+      25,
+    );
+
+    doc.text(
+      `Min %: ${filters.minPercentage || "0"}   |   Max %: ${filters.maxPercentage || "100"}`,
+      14,
+      32,
+    );
+
+    doc.text(`Total Students: ${studentCount}`, 14, 39);
+
+    doc.text(`Generated On: ${currentDate}`, 14, 46);
+
+    // 🔹 Table Data
+    const tableColumn = [
+      "Roll No",
+      "Name",
+      "Total Classes",
+      "Present Classes",
+      "Attendance %",
+    ];
+
+    const tableRows = students.map((student) => [
+      student.rollNo,
+      student.name,
+      student.totalClasses,
+      student.presentClasses,
+      student.attendancePercentage + "%",
+    ]);
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 55,
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [22, 160, 133] },
+    });
+
+    doc.save(`Attendance_${filters.branch}_Sem${filters.semester}.pdf`);
+  };
+
+  const downloadExcel = () => {
+    if (students.length === 0) {
+      alert("No data to export");
+      return;
+    }
+
+    const worksheetData = students.map((student) => ({
+      "Roll No": student.rollNo,
+      Name: student.name,
+      "Total Classes": student.totalClasses,
+      "Present Classes": student.presentClasses,
+      "Attendance %": student.attendancePercentage,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+
+    saveAs(data, "Attendance_Summary.xlsx");
+  };
 
   useEffect(() => {
     if (filters.regulation && filters.branch && filters.semester) {
@@ -115,12 +208,21 @@ const AttendanceTable = () => {
           className="no-spinner"
           onChange={handleChange}
         />
-        {/* 
-  <button onClick={fetchAttendance} className="filter-btn">
-    Search
-  </button> */}
+
+        {/* <button onClick={fetchAttendance} className="filter-btn">
+          Search
+        </button> */}
+
         <button onClick={fetchAttendance} className="filter-btn">
           Search
+        </button>
+
+        <button onClick={downloadPDF} className="download-btn">
+          PDF
+        </button>
+
+        <button onClick={downloadExcel} className="download-btn">
+          Excel
         </button>
 
         {!loading && (
@@ -134,41 +236,6 @@ const AttendanceTable = () => {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        // <table className="attendance-table">
-        //   <thead>
-        //     <tr>
-        //       <th>Roll No</th>
-        //       <th>Name</th>
-        //       <th>Total Classes</th>
-        //       <th>Present Classes</th>
-        //       <th>Attendance %</th>
-        //     </tr>
-        //   </thead>
-        //   <tbody>
-        //     {students.length === 0 ? (
-        //       <tr>
-        //         <td colSpan="5">No data found</td>
-        //       </tr>
-        //     ) : (
-        //       students.map((student) => (
-        //         <tr key={student.rollNo}>
-        //           {/* 🔴 Highlight only Roll No if < 75% */}
-        //           <td
-        //             className={
-        //               student.attendancePercentage < 75 ? "low-attendance" : ""
-        //             }
-        //           >
-        //             {student.rollNo}
-        //           </td>
-        //           <td>{student.name}</td>
-        //           <td>{student.totalClasses}</td>
-        //           <td>{student.presentClasses}</td>
-        //           <td>{student.attendancePercentage}%</td>
-        //         </tr>
-        //       ))
-        //     )}
-        //   </tbody>
-        // </table>
         <div className="table-wrapper">
           <table className="attendance-table">
             <thead>

@@ -16,7 +16,6 @@ router.post(
   subjectController.addSubject,
 );
 
-// router.put("/update-subject/:id",auth,authorizeRoles("admin","faculty"),subjectController.updateSubject)
 router.delete(
   "/delete-subject/:id",
   auth,

@@ -1,3 +1,5 @@
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { useCallback, useEffect, useState } from "react";
 import api from "../../../api/api";
 
@@ -136,6 +138,103 @@ export default function SubjectResultAnalysis() {
     }
   };
 
+  // download pdf
+  const downloadPDF = () => {
+    if (students.length === 0) {
+      alert("No data to export");
+      return;
+    }
+
+    const doc = new jsPDF();
+    const currentDateTime = new Date().toLocaleString();
+
+    // 🔹 Title
+    doc.setFontSize(16);
+    doc.text("SUBJECT RESULT ANALYSIS REPORT", 14, 15);
+
+    // 🔹 Filter Details
+    doc.setFontSize(11);
+    doc.text(
+      `Regulation: ${filters.regulation}   |   Branch: ${filters.branch}   |   Semester: ${filters.semester}`,
+      14,
+      25,
+    );
+
+    doc.text(
+      `Subject: ${filters.subjectCode || "All"}   |   Result: ${
+        filters.result || "All"
+      }`,
+      14,
+      32,
+    );
+
+    doc.text(`Total Students: ${total}`, 14, 39);
+    doc.text(`Generated On: ${currentDateTime}`, 14, 46);
+
+    let startY = 55;
+
+    // 🏆 If toppers exist
+    if (toppers.length > 0) {
+      doc.setFontSize(13);
+      doc.text("Subject Toppers", 14, startY);
+      startY += 5;
+
+      const topperColumns = ["Rank", "Roll No", "Name", "Total Marks", "Grade"];
+
+      const topperRows = toppers.map((t, i) => [
+        i + 1,
+        t.rollNo,
+        t.name,
+        t.totalMarks,
+        t.grade,
+      ]);
+
+      autoTable(doc, {
+        head: [topperColumns],
+        body: topperRows,
+        startY: startY + 5,
+        styles: { fontSize: 9 },
+        headStyles: { fillColor: [41, 128, 185] },
+      });
+
+      startY = doc.lastAutoTable.finalY + 10;
+    }
+
+    // 📋 Student Results Table
+    doc.setFontSize(13);
+    doc.text("Student Results", 14, startY);
+
+    const studentColumns = [
+      "Roll No",
+      "Name",
+      "Subject",
+      "Total Marks",
+      "Grade",
+      "Result",
+    ];
+
+    const studentRows = students.map((stu) => [
+      stu.rollNo,
+      stu.name,
+      stu.subjectName,
+      stu.totalMarks,
+      stu.grade,
+      stu.result,
+    ]);
+
+    autoTable(doc, {
+      head: [studentColumns],
+      body: studentRows,
+      startY: startY + 5,
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [22, 160, 133] },
+    });
+
+    doc.save(
+      `Result_${filters.branch}_${filters.subjectCode}_Sem${filters.semester}.pdf`,
+    );
+  };
+
   return (
     <div className="attendance-page">
       <div className="attendance-container">
@@ -198,8 +297,15 @@ export default function SubjectResultAnalysis() {
             <option value="FAIL">FAIL</option>
           </select>
 
+          {/* <button className="filter-btn" onClick={handleSearch}>
+            Search
+          </button> */}
           <button className="filter-btn" onClick={handleSearch}>
             Search
+          </button>
+
+          <button className="download-btn" onClick={downloadPDF}>
+            PDF
           </button>
 
           <div className="student-count">

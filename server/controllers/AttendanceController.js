@@ -1,14 +1,12 @@
-const AttendanceSession = require("../models/AttendanceSession")
-const Subject = require("../models/Subject")
-const User = require('../models/User')
+const AttendanceSession = require("../models/AttendanceSession");
+const Subject = require("../models/Subject");
+const User = require("../models/User");
 const mongoose = require("mongoose");
-
-
 
 exports.addAttendence = async (req, res) => {
   try {
     const {
-      rollNo,          // ✅ CHANGED
+      rollNo, // ✅ CHANGED
       semester,
       regulation,
       branch,
@@ -16,7 +14,7 @@ exports.addAttendence = async (req, res) => {
       date,
       fromTime,
       toTime,
-      status
+      status,
     } = req.body;
 
     if (fromTime >= toTime) {
@@ -26,8 +24,8 @@ exports.addAttendence = async (req, res) => {
     // 🔍 Find student by rollNo
     const student = await User.findOne({
       rollNo: rollNo.toUpperCase(),
-      role: "student"
-    }).lean();
+      role: "student",
+    });
 
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
@@ -38,12 +36,12 @@ exports.addAttendence = async (req, res) => {
       subjectCode: subjectCode.toUpperCase(),
       semester,
       regulation,
-      branch
-    }).lean();
+      branch,
+    });
 
     if (!subject) {
       return res.status(400).json({
-        message: "Invalid subject for this semester, branch and regulation"
+        message: "Invalid subject for this semester, branch and regulation",
       });
     }
 
@@ -51,23 +49,23 @@ exports.addAttendence = async (req, res) => {
     const sessions = await AttendanceSession.find({
       student: student._id,
       semester,
-      date
+      date,
     });
 
-    const isOverlap = sessions.some(s =>
-      fromTime < s.toTime && toTime > s.fromTime
+    const isOverlap = sessions.some(
+      (s) => fromTime < s.toTime && toTime > s.fromTime,
     );
 
     if (isOverlap) {
       return res.status(400).json({
-        message: "Attendance already exists for this time slot"
+        message: "Attendance already exists for this time slot",
       });
     }
 
     // ✅ Create attendance
     const attendance = await AttendanceSession.create({
       student: student._id,
-      rollNo: student.rollNo,        // (optional but useful)
+      rollNo: student.rollNo, // (optional but useful)
       semester,
       regulation,
       branch,
@@ -76,7 +74,7 @@ exports.addAttendence = async (req, res) => {
       date,
       fromTime,
       toTime,
-      status
+      status,
     });
 
     res.status(201).json(attendance);
@@ -85,284 +83,198 @@ exports.addAttendence = async (req, res) => {
   }
 };
 
-
-
-
-exports.getAttendenceStudentId =  async (req, res) => {
+exports.getAttendenceStudentId = async (req, res) => {
   const attendance = await AttendanceSession.find({
-    student: req.params.studentId
+    student: req.params.studentId,
   }).sort({ date: 1, fromTime: 1 });
 
   res.json(attendance);
-}
+};
 
 exports.getAttendenceStudentIdSemester = async (req, res) => {
-    const { studentId, semester } = req.params;
+  const { studentId, semester } = req.params;
 
-    const attendance = await AttendanceSession.find({
-      student: studentId,
-      semester
-    }).sort({ date: 1, fromTime: 1 });
+  const attendance = await AttendanceSession.find({
+    student: studentId,
+    semester,
+  }).sort({ date: 1, fromTime: 1 });
 
-    res.json(attendance);
-  }
+  res.json(attendance);
+};
 
+exports.getSemesterAttendanceSummary = async (req, res) => {
+  try {
+    // const { regulation, branch, semester, minPercentage } = req.query;
+    const { regulation, branch, semester, minPercentage, maxPercentage } =
+      req.query;
 
-
-
-  // const mongoose = require("mongoose");
-  // const User = require("../models/User");
-  // const Attendance = require("../models/Attendance");
-  
-  exports.getSemesterAttendanceSummary = async (req, res) => {
-    try {
-      // const { regulation, branch, semester, minPercentage } = req.query;
-      const { regulation, branch, semester, minPercentage, maxPercentage } = req.query;
-  
-      if (!regulation || !branch || !semester) {
-        return res.status(400).json({
-          message: "regulation, branch and semester are required"
-        });
-      }
-  
-      // const semesterNum = Number(semester);
-      // const minPercent = minPercentage ? Number(minPercentage) : 0;
-      const semesterNum = Number(semester);
-      const minPercent = minPercentage ? Number(minPercentage) : 0;
-      const maxPercent = maxPercentage ? Number(maxPercentage) : 100;
-  
-      const data = await User.aggregate([
-        // 1️⃣ Filter students
-        {
-          $match: {
-            role: "student",
-            regulation,
-            branch,
-            semester: semesterNum,
-            academicStatus: "ACTIVE"
-          }
-        },
-  
-        // 2️⃣ Join attendance
-        {
-          $lookup: {
-            from: "attendances",
-            let: { studentId: "$_id" },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ["$student", "$$studentId"] },
-                      { $eq: ["$semester", semesterNum] }
-                    ]
-                  }
-                }
-              }
-            ],
-            as: "attendanceRecords"
-          }
-        },
-  
-        // 3️⃣ Calculate totals
-        {
-          $addFields: {
-            totalClasses: { $size: "$attendanceRecords" },
-            presentClasses: {
-              $size: {
-                $filter: {
-                  input: "$attendanceRecords",
-                  as: "att",
-                  cond: { $eq: ["$$att.status", "PRESENT"] }
-                }
-              }
-            }
-          }
-        },
-  
-        // 4️⃣ Calculate percentage
-        {
-          $addFields: {
-            attendancePercentage: {
-              $cond: [
-                { $eq: ["$totalClasses", 0] },
-                0,
-                {
-                  $round: [
-                    {
-                      $multiply: [
-                        { $divide: ["$presentClasses", "$totalClasses"] },
-                        100
-                      ]
-                    },
-                    2
-                  ]
-                }
-              ]
-            }
-          }
-        },
-  
-        // 5️⃣ Filter by percentage (75%, 65%, etc.)
-        // {
-        //   $match: {
-        //     attendancePercentage: { $gte: minPercent }
-        //   }
-        // }
-        
-
-        {
-  $match: {
-    attendancePercentage: {
-      $gte: minPercent,
-      $lte: maxPercent
-    }
-  }
-}
-
-        ,
-  
-        // 6️⃣ Final projection
-        {
-          $project: {
-            _id: 0,
-            studentId: "$_id",
-            name: 1,
-            rollNo: 1,
-            regulation: 1,
-            branch: 1,
-            semester: 1,
-            totalClasses: 1,
-            presentClasses: 1,
-            attendancePercentage: 1
-          }
-        },
-  
-        // 7️⃣ Sort (optional)
-        {
-          $sort: { attendancePercentage: -1 }
-        }
-      ]);
-  
-      res.status(200).json({
-        count: data.length,
-        students: data
+    if (!regulation || !branch || !semester) {
+      return res.status(400).json({
+        message: "regulation, branch and semester are required",
       });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server error" });
     }
-  };
-  
 
-// exports.getStudentPresentClasses = async (req, res) => {
-//   try {
-//     const {
-//       rollNo,
-//       regulation,
-//       branch,
-//       semester,
-//       subjectName
-//     } = req.query;   // 👈 changed here
+    // const semesterNum = Number(semester);
+    // const minPercent = minPercentage ? Number(minPercentage) : 0;
+    const semesterNum = Number(semester);
+    const minPercent = minPercentage ? Number(minPercentage) : 0;
+    const maxPercent = maxPercentage ? Number(maxPercentage) : 100;
 
-//     const student = await User.findOne({
-//       rollNo: rollNo.toUpperCase(),
-//       role: "student"
-//     }).lean()
+    const data = await User.aggregate([
+      // 1️⃣ Filter students
+      {
+        $match: {
+          role: "student",
+          regulation,
+          branch,
+          semester: semesterNum,
+          academicStatus: "ACTIVE",
+        },
+      },
 
-//     if (!student) {
-//       return res.status(404).json({ message: "Student not found" });
-//     }
+      // 2️⃣ Join attendance
+      {
+        $lookup: {
+          from: "attendances",
+          let: { studentId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$student", "$$studentId"] },
+                    { $eq: ["$semester", semesterNum] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: "attendanceRecords",
+        },
+      },
 
-//     const subject = await Subject.findOne({
-//       subjectName,
-//       regulation,
-//       branch,
-//       semester
-//     }).lean();
+      // 3️⃣ Calculate totals
+      {
+        $addFields: {
+          totalClasses: { $size: "$attendanceRecords" },
+          presentClasses: {
+            $size: {
+              $filter: {
+                input: "$attendanceRecords",
+                as: "att",
+                cond: { $eq: ["$$att.status", "PRESENT"] },
+              },
+            },
+          },
+        },
+      },
 
-//     if (!subject) {
-//       return res.status(404).json({ message: "Subject not found" });
-//     }
+      // 4️⃣ Calculate percentage
+      {
+        $addFields: {
+          attendancePercentage: {
+            $cond: [
+              { $eq: ["$totalClasses", 0] },
+              0,
+              {
+                $round: [
+                  {
+                    $multiply: [
+                      { $divide: ["$presentClasses", "$totalClasses"] },
+                      100,
+                    ],
+                  },
+                  2,
+                ],
+              },
+            ],
+          },
+        },
+      },
 
-//     const attendanceList = await AttendanceSession.find({
-//       student: student._id,
-//       subjectCode: subject.subjectCode,
-//       semester,
-//       status: "PRESENT"
-//     })
-//       .select("date fromTime toTime -_id")
-//       .sort({ date: -1 });
+      // 5️⃣ Filter by percentage (75%, 65%, etc.)
+      // {
+      //   $match: {
+      //     attendancePercentage: { $gte: minPercent }
+      //   }
+      // }
 
-//     res.json(attendanceList);
+      {
+        $match: {
+          attendancePercentage: {
+            $gte: minPercent,
+            $lte: maxPercent,
+          },
+        },
+      },
 
-//   } catch (err) {
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// };
+      // 6️⃣ Final projection
+      {
+        $project: {
+          _id: 0,
+          studentId: "$_id",
+          name: 1,
+          rollNo: 1,
+          regulation: 1,
+          branch: 1,
+          semester: 1,
+          totalClasses: 1,
+          presentClasses: 1,
+          attendancePercentage: 1,
+        },
+      },
 
+      // 7️⃣ Sort (optional)
+      {
+        $sort: { attendancePercentage: -1 },
+      },
+    ]);
 
-
+    res.status(200).json({
+      count: data.length,
+      students: data,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 exports.getStudentPresentClasses = async (req, res) => {
   try {
-    const {
-      rollNo,
-      regulation,
-      branch,
-      semester,
-      subjectName
-    } = req.query;
+    const { rollNo, regulation, branch, semester, subjectName } = req.query; // 👈 changed here
 
-    if (!rollNo || !regulation || !branch || !semester || !subjectName) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
-
-    // ✅ 1️⃣ Fetch only required student fields
     const student = await User.findOne({
       rollNo: rollNo.toUpperCase(),
-      role: "student"
-    })
-      .select("_id")
-      .lean();
+      role: "student",
+    }).lean();
 
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
     }
 
-    // ✅ 2️⃣ Fetch only subjectCode (no full subject document)
     const subject = await Subject.findOne({
       subjectName,
       regulation,
       branch,
-      semester: Number(semester)
-    })
-      .select("subjectCode")
-      .lean();
+      semester,
+    }).lean();
 
     if (!subject) {
       return res.status(404).json({ message: "Subject not found" });
     }
 
-    // ✅ 3️⃣ Optimized attendance query
     const attendanceList = await AttendanceSession.find({
       student: student._id,
       subjectCode: subject.subjectCode,
-      semester: Number(semester),
-      status: "PRESENT"
+      semester,
+      status: "PRESENT",
     })
       .select("date fromTime toTime -_id")
-      .sort({ date: -1 })
-      .lean();
+      .sort({ date: -1 });
 
-    res.json({
-      success: true,
-      totalPresentClasses: attendanceList.length,
-      attendance: attendanceList
-    });
-
+    res.json(attendanceList);
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Server Error" });
   }
 };

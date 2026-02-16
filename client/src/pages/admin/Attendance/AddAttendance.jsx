@@ -60,7 +60,7 @@ export default function AddAttendance() {
     console.log("Fetching student for rollNo:", rollNo); // 🔥 ADD THIS
 
     try {
-      const res = await api.get(`/api/auth/student/basic/${rollNo}`, {
+      const res = await api.get(`/auth/student/basic/${rollNo}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -99,7 +99,7 @@ export default function AddAttendance() {
               type="text"
               name="rollNo"
               placeholder="Roll Number"
-              value={form.rollNo}
+              value={form.rollNo.trim().toUpperCase()}
               onChange={handleChange}
               onBlur={(e) => fetchStudentDetails(e.target.value)}
               required

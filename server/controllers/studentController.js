@@ -1,8 +1,7 @@
 const User = require("../models/User");
 const Subject = require("../models/Subject");
-const Attendance = require("../models/AttendanceSession")
-const Marks = require("../models/Marks")
-
+const Attendance = require("../models/AttendanceSession");
+const Marks = require("../models/Marks");
 
 exports.getStudentWithCurrentSubjects = async (req, res) => {
   try {
@@ -11,13 +10,13 @@ exports.getStudentWithCurrentSubjects = async (req, res) => {
     // 1️⃣ Find student
     const student = await User.findOne({
       rollNo: rollNo.toUpperCase(),
-      role: "student"
+      role: "student",
     }).select("-password");
 
     if (!student) {
       return res.status(404).json({
         success: false,
-        message: "Student not found"
+        message: "Student not found",
       });
     }
 
@@ -28,8 +27,10 @@ exports.getStudentWithCurrentSubjects = async (req, res) => {
     const subjects = await Subject.find({
       regulation,
       branch,
-      semester
-    }).sort({ subjectCode: 1 }).lean();
+      semester,
+    })
+      .sort({ subjectCode: 1 })
+      .lean();
 
     // 4️⃣ Final response
     res.status(200).json({
@@ -41,78 +42,20 @@ exports.getStudentWithCurrentSubjects = async (req, res) => {
         regulation: student.regulation,
         year: student.year,
         semester: student.semester,
-        academicStatus: student.academicStatus
+        academicStatus: student.academicStatus,
       },
-      subjects
+      subjects,
     });
 
-
-    console.log(student.branch,student.branch,student.semester)
+    console.log(student.branch, student.branch, student.semester);
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: "Server error"
+      message: "Server error",
     });
   }
 };
-
-
-// exports.getStudentWithCurrentSubjects = async (req, res) => {
-//   try {
-//     const { rollNo } = req.params;
-
-//     if (!rollNo) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Roll number is required"
-//       });
-//     }
-
-//     // ✅ 1️⃣ Fetch only required student fields
-//     const student = await User.findOne({
-//       rollNo: rollNo.toUpperCase(),
-//       role: "student"
-//     })
-//       .select("name rollNo branch regulation year semester academicStatus")
-//       .lean();
-
-//     if (!student) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Student not found"
-//       });
-//     }
-
-//     const { regulation, branch, semester } = student;
-
-//     // ✅ 2️⃣ Fetch only required subject fields
-//     const subjects = await Subject.find({
-//       regulation,
-//       branch,
-//       semester: Number(semester)
-//     })
-//       .select("subjectCode subjectName credits -_id")
-//       .sort({ subjectCode: 1 })
-//       .lean();
-
-//     // ✅ 3️⃣ Final response
-//     res.status(200).json({
-//       success: true,
-//       student,
-//       subjects
-//     });
-
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Server error"
-//     });
-//   }
-// };
-
-
 
 exports.getCurrentSemesterAttendance = async (req, res) => {
   try {
@@ -121,9 +64,8 @@ exports.getCurrentSemesterAttendance = async (req, res) => {
     // 1️⃣ Fetch student (only required fields)
     const student = await User.findOne({
       rollNo: rollNo.toUpperCase(),
-      role: "student"
-    })
-      .select("_id semester");
+      role: "student",
+    }).select("_id semester");
 
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
@@ -136,8 +78,8 @@ exports.getCurrentSemesterAttendance = async (req, res) => {
       {
         $match: {
           student: _id,
-          semester: semester
-        }
+          semester: semester,
+        },
       },
       {
         $group: {
@@ -146,18 +88,18 @@ exports.getCurrentSemesterAttendance = async (req, res) => {
           totalClasses: { $sum: 1 },
           attendedClasses: {
             $sum: {
-              $cond: [{ $eq: ["$status", "PRESENT"] }, 1, 0]
-            }
-          }
-        }
-      }
+              $cond: [{ $eq: ["$status", "PRESENT"] }, 1, 0],
+            },
+          },
+        },
+      },
     ]);
 
     // 3️⃣ Calculate overall
     let overallTotal = 0;
     let overallPresent = 0;
 
-    const subjectAttendance = attendanceData.map(sub => {
+    const subjectAttendance = attendanceData.map((sub) => {
       overallTotal += sub.totalClasses;
       overallPresent += sub.attendedClasses;
 
@@ -169,7 +111,7 @@ exports.getCurrentSemesterAttendance = async (req, res) => {
         percentage:
           sub.totalClasses === 0
             ? "0.00"
-            : ((sub.attendedClasses / sub.totalClasses) * 100).toFixed(2)
+            : ((sub.attendedClasses / sub.totalClasses) * 100).toFixed(2),
       };
     });
 
@@ -184,74 +126,15 @@ exports.getCurrentSemesterAttendance = async (req, res) => {
       overall: {
         totalClasses: overallTotal,
         attendedClasses: overallPresent,
-        percentage: overallPercentage
+        percentage: overallPercentage,
       },
-      attendance: subjectAttendance
+      attendance: subjectAttendance,
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
-
-
-
-
-// exports.getStudentResult = async (req, res) => {
-//   try {
-//     const { rollNo, semester } = req.params;
-
-//     if (!rollNo || !semester) {
-//       return res.status(400).json({ message: "Roll No and Semester required" });
-//     }
-
-//     // 1. Get student basic details
-//     const student = await User.findOne({
-//       rollNo: rollNo.toUpperCase(),
-//       role: "student"
-//     }).select("name rollNo regulation branch").lean();
-
-//     if (!student) {
-//       return res.status(404).json({ message: "Student not found" });
-//     }
-
-//     // 2. Get marks for semester
-//     const marks = await Marks.find({
-//       student: student._id,
-//       semester
-//     }).sort({ subjectCode: 1 }).lean();
-
-//     if (marks.length === 0) {
-//       return res.status(404).json({ message: "No results found" });
-//     }
-
-//     // 3. SGPA calculation
-//     let totalCredits = 0;
-//     let totalPoints = 0;
-
-//     marks.forEach(m => {
-//       totalCredits += m.credits;
-//       totalPoints += m.credits * m.gradePoint;
-//     });
-
-//     const sgpa = (totalPoints / totalCredits).toFixed(2);
-
-//     res.json({
-//       student,
-//       semester,
-//       sgpa,
-//       marks
-//     });
-
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-
-// get semester wise results to fetch it in the tabular form in the student dashboard
-
 
 exports.getStudentResult = async (req, res) => {
   try {
@@ -260,7 +143,7 @@ exports.getStudentResult = async (req, res) => {
     if (!rollNo || !semester) {
       return res.status(400).json({
         success: false,
-        message: "Roll No and Semester required"
+        message: "Roll No and Semester required",
       });
     }
 
@@ -269,22 +152,20 @@ exports.getStudentResult = async (req, res) => {
     // ✅ 1️⃣ Fetch only required student fields
     const student = await User.findOne({
       rollNo: rollNo.toUpperCase(),
-      role: "student"
-    })
-      .select("_id name rollNo regulation branch")
-     
+      role: "student",
+    }).select("_id name rollNo regulation branch");
 
     if (!student) {
       return res.status(404).json({
         success: false,
-        message: "Student not found"
+        message: "Student not found",
       });
     }
 
     // ✅ 2️⃣ Fetch only required marks fields
     const marks = await Marks.find({
       student: student._id,
-      semester: semNumber
+      semester: semNumber,
     })
       .select("subjectCode subjectName credits grade gradePoint -_id")
       .sort({ subjectCode: 1 })
@@ -293,7 +174,7 @@ exports.getStudentResult = async (req, res) => {
     if (!marks.length) {
       return res.status(404).json({
         success: false,
-        message: "No results found"
+        message: "No results found",
       });
     }
 
@@ -307,9 +188,7 @@ exports.getStudentResult = async (req, res) => {
     }
 
     const sgpa =
-      totalCredits > 0
-        ? Number((totalPoints / totalCredits).toFixed(2))
-        : 0;
+      totalCredits > 0 ? Number((totalPoints / totalCredits).toFixed(2)) : 0;
 
     // ✅ 4️⃣ Clean response
     res.json({
@@ -318,114 +197,16 @@ exports.getStudentResult = async (req, res) => {
       semester: semNumber,
       sgpa,
       totalSubjects: marks.length,
-      marks
+      marks,
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: "Server error"
+      message: "Server error",
     });
   }
 };
-
-
-
-
-// exports.getSemesterWiseResult = async (req, res) => {
-//   try {
-//     const { rollNo } = req.params;
-
-//     // 1️⃣ Find student
-//     const student = await User.findOne({
-//       rollNo: rollNo.toUpperCase(),
-//       role: "student"
-//     });
-
-//     if (!student) {
-//       return res.status(404).json({ message: "Student not found" });
-//     }
-
-//     // 2️⃣ Aggregate semester-wise data
-//     const semesterData = await Marks.aggregate([
-//       {
-//         $match: {
-//           student: student._id
-//         }
-//       },
-//       {
-//         $group: {
-//           _id: "$semester",
-
-//           totalCredits: { $sum: "$credits" },
-
-//           securedCredits: {
-//             $sum: {
-//               $cond: [{ $ne: ["$grade", "F"] }, "$credits", 0]
-//             }
-//           },
-
-//           totalGradePoints: {
-//             $sum: {
-//               $multiply: ["$credits", "$gradePoint"]
-//             }
-//           }
-//         }
-//       },
-//       {
-//         $addFields: {
-//           sgpa: {
-//             $round: [
-//               { $divide: ["$totalGradePoints", "$totalCredits"] },
-//               2
-//             ]
-//           }
-//         }
-//       },
-//       {
-//         $sort: { _id: 1 }
-//       }
-//     ]);
-
-//     // 3️⃣ Calculate CGPA cumulatively
-//     let cumulativeCredits = 0;
-//     let cumulativeGradePoints = 0;
-
-//     const result = semesterData.map((sem) => {
-//       cumulativeCredits += sem.totalCredits;
-//       cumulativeGradePoints += sem.totalGradePoints;
-
-//       return {
-//         semester: sem._id,
-//         totalCredits: sem.totalCredits,
-//         securedCredits: sem.securedCredits,
-//         sgpa: sem.sgpa,
-//         cgpa: Number(
-//           (cumulativeGradePoints / cumulativeCredits).toFixed(2)
-//         )
-//       };
-//     });
-
-//     res.json({
-//       student: {
-//         name: student.name,
-//         rollNo: student.rollNo,
-//         branch: student.branch,
-//         regulation: student.regulation
-//       },
-//       semesters: result
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-
-// get the student semester wise => subject wise result 
-
-
-
 
 exports.getSemesterMarks = async (req, res) => {
   try {
@@ -433,164 +214,30 @@ exports.getSemesterMarks = async (req, res) => {
 
     const student = await User.findOne({
       rollNo: rollNo.toUpperCase(),
-      role: "student"
-    })
+      role: "student",
+    });
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
     }
 
     const marks = await Marks.find({
       student: student._id,
-      semester: Number(semester)
+      semester: Number(semester),
     })
       .select(
-        "subjectCode subjectName credits totalMarks grade gradePoint result"
+        "subjectCode subjectName credits totalMarks grade gradePoint result",
       )
       .sort({ subjectCode: 1 })
       .lean();
 
     res.json({
       semester: Number(semester),
-      subjects: marks
+      subjects: marks,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
-
-// get attendence report of a student 
-
-// exports.getStudentAttendanceReport = async (req, res) => {
-//   try {
-//     const { rollNo } = req.params;
-
-//     // 1️⃣ Find student
-//     const student = await User.findOne({
-//       rollNo: rollNo.toUpperCase(),
-//       role: "student"
-//     }).lean();
-
-//     if (!student) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Student not found"
-//       });
-//     }
-
-//     // ===============================
-//     // 2️⃣ SEMESTER-WISE ATTENDANCE
-//     // ===============================
-//     const semesterWiseAttendance = await Attendance.aggregate([
-//       {
-//         $match: {
-//           student: student._id
-//         }
-//       },
-//       {
-//         $group: {
-//           _id: "$semester",
-//           totalClasses: { $sum: 1 },
-//           attendedClasses: {
-//             $sum: {
-//               $cond: [{ $eq: ["$status", "PRESENT"] }, 1, 0]
-//             }
-//           }
-//         }
-//       },
-//       {
-//         $project: {
-//           _id: 0,
-//           semester: "$_id",
-//           totalClasses: 1,
-//           attendedClasses: 1,
-//           attendancePercentage: {
-//             $round: [
-//               {
-//                 $multiply: [
-//                   { $divide: ["$attendedClasses", "$totalClasses"] },
-//                   100
-//                 ]
-//               },
-//               2
-//             ]
-//           }
-//         }
-//       },
-//       { $sort: { semester: 1 } }
-//     ]);
-
-//     // ===============================
-//     // 3️⃣ SUBJECT-WISE ATTENDANCE (ALL SEMESTERS)
-//     // ===============================
-//     const subjectWiseAttendance = await Attendance.aggregate([
-//       {
-//         $match: {
-//           student: student._id
-//         }
-//       },
-//       {
-//         $group: {
-//           _id: {
-//             subjectCode: "$subjectCode",
-//             subjectName: "$subjectName",
-//             semester: "$semester"
-//           },
-//           totalClasses: { $sum: 1 },
-//           attendedClasses: {
-//             $sum: {
-//               $cond: [{ $eq: ["$status", "PRESENT"] }, 1, 0]
-//             }
-//           }
-//         }
-//       },
-//       {
-//         $project: {
-//           _id: 0,
-//           subjectCode: "$_id.subjectCode",
-//           subjectName: "$_id.subjectName",
-//           semester: "$_id.semester",
-//           totalClasses: 1,
-//           attendedClasses: 1,
-//           attendancePercentage: {
-//             $round: [
-//               {
-//                 $multiply: [
-//                   { $divide: ["$attendedClasses", "$totalClasses"] },
-//                   100
-//                 ]
-//               },
-//               2
-//             ]
-//           }
-//         }
-//       },
-//       { $sort: { semester: 1, subjectCode: 1 } }
-//     ]);
-
-//     // ===============================
-//     // 4️⃣ FINAL RESPONSE
-//     // ===============================
-//     res.status(200).json({
-//       success: true,
-//       student: {
-//         name: student.name,
-//         rollNo: student.rollNo,
-//         branch: student.branch,
-//         regulation: student.regulation
-//       },
-//       semesterWiseAttendance,
-//       subjectWiseAttendance
-//     });
-//   } catch (error) {
-//     console.error("Attendance Error:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Internal server error"
-//     });
-//   }
-// };
-
 
 exports.getStudentAttendanceReport = async (req, res) => {
   try {
@@ -599,14 +246,14 @@ exports.getStudentAttendanceReport = async (req, res) => {
     if (!rollNo) {
       return res.status(400).json({
         success: false,
-        message: "Roll number is required"
+        message: "Roll number is required",
       });
     }
 
     // ✅ 1️⃣ Fetch only required student fields
     const student = await User.findOne({
       rollNo: rollNo.toUpperCase(),
-      role: "student"
+      role: "student",
     })
       .select("_id name rollNo branch regulation")
       .lean();
@@ -614,14 +261,14 @@ exports.getStudentAttendanceReport = async (req, res) => {
     if (!student) {
       return res.status(404).json({
         success: false,
-        message: "Student not found"
+        message: "Student not found",
       });
     }
 
     // ✅ 2️⃣ Single aggregation with $facet (faster than 2 separate pipelines)
     const attendanceReport = await Attendance.aggregate([
       {
-        $match: { student: student._id }
+        $match: { student: student._id },
       },
       {
         $facet: {
@@ -632,10 +279,10 @@ exports.getStudentAttendanceReport = async (req, res) => {
                 totalClasses: { $sum: 1 },
                 attendedClasses: {
                   $sum: {
-                    $cond: [{ $eq: ["$status", "PRESENT"] }, 1, 0]
-                  }
-                }
-              }
+                    $cond: [{ $eq: ["$status", "PRESENT"] }, 1, 0],
+                  },
+                },
+              },
             },
             {
               $project: {
@@ -652,17 +299,17 @@ exports.getStudentAttendanceReport = async (req, res) => {
                         {
                           $multiply: [
                             { $divide: ["$attendedClasses", "$totalClasses"] },
-                            100
-                          ]
+                            100,
+                          ],
                         },
-                        2
-                      ]
-                    }
-                  ]
-                }
-              }
+                        2,
+                      ],
+                    },
+                  ],
+                },
+              },
             },
-            { $sort: { semester: 1 } }
+            { $sort: { semester: 1 } },
           ],
 
           subjectWiseAttendance: [
@@ -671,15 +318,15 @@ exports.getStudentAttendanceReport = async (req, res) => {
                 _id: {
                   subjectCode: "$subjectCode",
                   subjectName: "$subjectName",
-                  semester: "$semester"
+                  semester: "$semester",
                 },
                 totalClasses: { $sum: 1 },
                 attendedClasses: {
                   $sum: {
-                    $cond: [{ $eq: ["$status", "PRESENT"] }, 1, 0]
-                  }
-                }
-              }
+                    $cond: [{ $eq: ["$status", "PRESENT"] }, 1, 0],
+                  },
+                },
+              },
             },
             {
               $project: {
@@ -698,20 +345,20 @@ exports.getStudentAttendanceReport = async (req, res) => {
                         {
                           $multiply: [
                             { $divide: ["$attendedClasses", "$totalClasses"] },
-                            100
-                          ]
+                            100,
+                          ],
                         },
-                        2
-                      ]
-                    }
-                  ]
-                }
-              }
+                        2,
+                      ],
+                    },
+                  ],
+                },
+              },
             },
-            { $sort: { semester: 1, subjectCode: 1 } }
-          ]
-        }
-      }
+            { $sort: { semester: 1, subjectCode: 1 } },
+          ],
+        },
+      },
     ]);
 
     const { semesterWiseAttendance, subjectWiseAttendance } =
@@ -722,120 +369,16 @@ exports.getStudentAttendanceReport = async (req, res) => {
       success: true,
       student,
       semesterWiseAttendance,
-      subjectWiseAttendance
+      subjectWiseAttendance,
     });
-
   } catch (error) {
     console.error("Attendance Error:", error);
     res.status(500).json({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 };
-
-
-
-// get daywise attendence of a student through the rollNo 
-// for the student dashboard   
-
-
-
-// exports.getAttendanceByRollNo = async (req, res) => {
-//   try {
-//     const { rollNo } = req.params;
-//     const { startDate, endDate, date } = req.query;
-
-//     // 1️⃣ Find student
-//     const student = await User.findOne({
-//       rollNo: rollNo.toUpperCase(),
-//       role: "student"
-//     }).select("_id name rollNo branch year semester").lean();
-
-//     if (!student) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Student not found"
-//       });
-//     }
-
-//     // 2️⃣ Base query
-//     const query = {
-//       student: student._id
-//     };
-
-//     let filterApplied = "ALL";
-//     let range = null;
-
-//     // 🟢 CASE 1: DATE RANGE (highest priority)
-//     if (startDate && endDate) {
-//       const from = new Date(startDate);
-//       from.setHours(0, 0, 0, 0);
-
-//       const to = new Date(endDate);
-//       to.setHours(23, 59, 59, 999);
-
-//       query.date = { $gte: from, $lte: to };
-//       filterApplied = "DATE_RANGE";
-//       range = { startDate, endDate };
-//     }
-
-//     // 🟢 CASE 2: SINGLE DATE
-//     else if (date) {
-//       const from = new Date(date);
-//       from.setHours(0, 0, 0, 0);
-
-//       const to = new Date(date);
-//       to.setHours(23, 59, 59, 999);
-
-//       query.date = { $gte: from, $lte: to };
-//       filterApplied = "SINGLE_DATE";
-//       range = { date };
-//     }
-
-//     // 3️⃣ Fetch attendance
-//     const records = await Attendance.find(query)
-//       .sort({ date: 1, fromTime: 1 })
-//       .lean();
-
-//     // 4️⃣ Group DATE-WISE
-//     const attendanceByDate = {};
-
-//     records.forEach(item => {
-//       const dateKey = item.date.toISOString().split("T")[0];
-
-//       if (!attendanceByDate[dateKey]) {
-//         attendanceByDate[dateKey] = [];
-//       }
-
-//       attendanceByDate[dateKey].push({
-//         subjectCode: item.subjectCode,
-//         subjectName: item.subjectName,
-//         fromTime: item.fromTime,
-//         toTime: item.toTime,
-//         status: item.status
-//       });
-//     });
-
-//     // 5️⃣ Response
-//     res.status(200).json({
-//       success: true,
-//       student,
-//       filterApplied,
-//       range,
-//       totalDays: Object.keys(attendanceByDate).length,
-//       attendance: attendanceByDate
-//     });
-
-//   } catch (error) {
-//     console.error("Attendance fetch error:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Server error"
-//     });
-//   }
-// };
-
 
 exports.getAttendanceByRollNo = async (req, res) => {
   try {
@@ -845,7 +388,7 @@ exports.getAttendanceByRollNo = async (req, res) => {
     // 1️⃣ Fetch only required student fields
     const student = await User.findOne({
       rollNo: rollNo.toUpperCase(),
-      role: "student"
+      role: "student",
     })
       .select("_id name rollNo branch year semester")
       .lean();
@@ -853,12 +396,12 @@ exports.getAttendanceByRollNo = async (req, res) => {
     if (!student) {
       return res.status(404).json({
         success: false,
-        message: "Student not found"
+        message: "Student not found",
       });
     }
 
     const matchStage = {
-      student: student._id
+      student: student._id,
     };
 
     let filterApplied = "ALL";
@@ -898,8 +441,8 @@ exports.getAttendanceByRollNo = async (req, res) => {
         $group: {
           _id: {
             date: {
-              $dateToString: { format: "%Y-%m-%d", date: "$date" }
-            }
+              $dateToString: { format: "%Y-%m-%d", date: "$date" },
+            },
           },
           records: {
             $push: {
@@ -907,23 +450,23 @@ exports.getAttendanceByRollNo = async (req, res) => {
               subjectName: "$subjectName",
               fromTime: "$fromTime",
               toTime: "$toTime",
-              status: "$status"
-            }
-          }
-        }
+              status: "$status",
+            },
+          },
+        },
       },
       {
         $project: {
           _id: 0,
           date: "$_id.date",
-          records: 1
-        }
-      }
+          records: 1,
+        },
+      },
     ]);
 
     // 3️⃣ Convert to date-wise object format (frontend friendly)
     const attendanceByDate = {};
-    attendanceData.forEach(day => {
+    attendanceData.forEach((day) => {
       attendanceByDate[day.date] = day.records;
     });
 
@@ -933,14 +476,13 @@ exports.getAttendanceByRollNo = async (req, res) => {
       filterApplied,
       range,
       totalDays: attendanceData.length,
-      attendance: attendanceByDate
+      attendance: attendanceByDate,
     });
-
   } catch (error) {
     console.error("Attendance fetch error:", error);
     res.status(500).json({
       success: false,
-      message: "Server error"
+      message: "Server error",
     });
   }
 };

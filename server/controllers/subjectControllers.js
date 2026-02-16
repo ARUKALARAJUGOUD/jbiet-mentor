@@ -114,7 +114,7 @@ exports.deleteSubject = async (req, res) => {
   try {
     const subjectId = req.params.id;
 
-    const subject = await Subject.findById(subjectId).lean();
+    const subject = await Subject.findById(subjectId);
 
     if (!subject) {
       return res.status(404).json({ message: "Subject not found" });

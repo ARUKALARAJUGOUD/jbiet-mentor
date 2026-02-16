@@ -83,6 +83,22 @@
   background: #0f172a;
 }
 
+
+.download-btn {
+  background-color: #289ca7;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  margin-left: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.download-btn:hover {
+  background-color: #2facc2;
+}
+
+
 /* Student count */
 .student-count {
   grid-column: 1 / -1;

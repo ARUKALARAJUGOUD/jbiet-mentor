@@ -1,49 +1,12 @@
-
 // const User = require("../models/User");
 const User = require("../models/User");
 const Marks = require("../models/Marks");
 const Subject = require("../models/Subject");
 const mongoose = require("mongoose");
 
-
-
-// GET /admin/students
-//  exports.getStudents = async (req, res) => {
-//   try {
-//     const { regulation, year, branch, rollNo, page = 1, limit = 20 } = req.query;
-
-//     const query = { role: "student" };
-
-//     if (regulation) query.regulation = regulation;
-//     if (year) query.year = Number(year);
-//     if (branch) query.branch = branch;
-//     if (rollNo) query.rollNo = new RegExp("^" + rollNo, "i");
-
-//     const students = await User.find(query)
-//       .select("name rollNo branch regulation year")
-//       .skip((page - 1) * limit)
-//       .limit(Number(limit))
-//       .sort({ rollNo: 1 })
-//       .lean();
-//     const total = await User.countDocuments(query);
-
-//     res.json({ total, students });
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// };
-
-
 exports.getStudents = async (req, res) => {
   try {
-    let {
-      regulation,
-      year,
-      branch,
-      rollNo,
-      page = 1,
-      limit = 20
-    } = req.query;
+    let { regulation, year, branch, rollNo, page = 1, limit = 20 } = req.query;
 
     page = Number(page);
     limit = Number(limit);
@@ -68,7 +31,7 @@ exports.getStudents = async (req, res) => {
         .limit(limit)
         .lean(),
 
-      User.countDocuments(query)
+      User.countDocuments(query),
     ]);
 
     res.json({
@@ -76,61 +39,12 @@ exports.getStudents = async (req, res) => {
       total,
       page,
       pages: Math.ceil(total / limit),
-      students
+      students,
     });
-
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
-
-
-
-
-// Get Student by Id 
-// exports.getStudentById =  async (req, res) => {
-//   try {
-//     const { id } = req.params;
-
-//     let student;
-
-//     // If MongoDB ObjectId
-//     if (id.match(/^[0-9a-fA-F]{24}$/)) {
-//       student = await User.findOne({
-//         _id: id,
-//         role: "student",
-//       }).select("-password").lean();
-//     }
-//     // Otherwise treat it as Roll Number
-//     else {
-//       student = await User.findOne({
-//         rollNo: id.toUpperCase(),
-//         role: "student",
-//       }).select("-password").lean()
-//     }
-
-//     if (!student) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Student not found",
-//       });
-//     }
-
-//     res.status(200).json({
-//       success: true,
-//       studentInfo: student,
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({
-//       success: false,
-//       message: "Server error",
-//     });
-//   }
-// }
-
-
-
 
 exports.getStudentById = async (req, res) => {
   try {
@@ -145,8 +59,9 @@ exports.getStudentById = async (req, res) => {
       query.rollNo = id.toUpperCase();
     }
 
-    const student = await User.findOne(query)
-      .select("name rollNo branch regulation year semester email"); // select only needed fields
+    const student = await User.findOne(query).select(
+      "name rollNo branch regulation year semester email",
+    ); // select only needed fields
 
     if (!student) {
       return res.status(404).json({
@@ -159,7 +74,6 @@ exports.getStudentById = async (req, res) => {
       success: true,
       studentInfo: student,
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -168,8 +82,6 @@ exports.getStudentById = async (req, res) => {
     });
   }
 };
-
-
 
 exports.getFaculty = async (req, res) => {
   try {
@@ -182,16 +94,17 @@ exports.getFaculty = async (req, res) => {
     }
 
     const faculty = await User.find(query)
-     // // .select("name rollNo facultyId")
-      .sort({ name: 1 }).lean();
+      // // .select("name rollNo facultyId")
+      .sort({ name: 1 })
+      .lean();
 
     res.json(faculty);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-}
+};
 
-//delete the faculty 
+//delete the faculty
 exports.deleteFaculty = async (req, res) => {
   try {
     const { id } = req.params;
@@ -214,8 +127,8 @@ exports.deleteFaculty = async (req, res) => {
       deletedFaculty: {
         id: faculty._id,
         name: faculty.name,
-        facultyId: faculty.facultyId
-      }
+        facultyId: faculty.facultyId,
+      },
     });
   } catch (error) {
     console.error("Delete Faculty Error:", error);
@@ -223,7 +136,7 @@ exports.deleteFaculty = async (req, res) => {
   }
 };
 
-//update the student 
+//update the student
 exports.updateStudentById = async (req, res) => {
   try {
     const allowedFields = [
@@ -235,12 +148,12 @@ exports.updateStudentById = async (req, res) => {
       "regulation",
       "year",
       "semester",
-      "academicStatus"
+      "academicStatus",
     ];
 
     const updateData = {};
 
-    allowedFields.forEach(field => {
+    allowedFields.forEach((field) => {
       if (req.body[field] !== undefined) {
         updateData[field] = req.body[field];
       }
@@ -249,7 +162,7 @@ exports.updateStudentById = async (req, res) => {
     const student = await User.findOneAndUpdate(
       { _id: req.params.id, role: "student" },
       updateData,
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     ).select("-password");
 
     if (!student) {
@@ -258,44 +171,39 @@ exports.updateStudentById = async (req, res) => {
 
     res.json({
       message: "Student updated successfully",
-      student
+      student,
     });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
 
-
 // admin dashboard like total students are enrolled  faculty , total subjects , total pass percentage
 
 exports.getAcademicDashboardStats = async (req, res) => {
   try {
-    const [
-      totalStudents,
-      totalFaculty,
-      totalSubjects,
-      passStats
-    ] = await Promise.all([
-      User.countDocuments({
-        role: "student",
-        academicStatus: "ACTIVE"
-      }),
-      User.countDocuments({ role: "faculty" }),
-      Subject.countDocuments(),
-      Marks.aggregate([
-        {
-          $group: {
-            _id: "$result",
-            count: { $sum: 1 }
-          }
-        }
-      ])
-    ]);
+    const [totalStudents, totalFaculty, totalSubjects, passStats] =
+      await Promise.all([
+        User.countDocuments({
+          role: "student",
+          academicStatus: "ACTIVE",
+        }),
+        User.countDocuments({ role: "faculty" }),
+        Subject.countDocuments(),
+        Marks.aggregate([
+          {
+            $group: {
+              _id: "$result",
+              count: { $sum: 1 },
+            },
+          },
+        ]),
+      ]);
 
     let totalResults = 0;
     let passedResults = 0;
 
-    passStats.forEach(stat => {
+    passStats.forEach((stat) => {
       totalResults += stat.count;
       if (stat._id === "PASS") {
         passedResults = stat.count;
@@ -313,25 +221,25 @@ exports.getAcademicDashboardStats = async (req, res) => {
         totalStudents,
         totalFaculty,
         totalSubjects,
-        passPercentage
-      }
+        passPercentage,
+      },
     });
   } catch (error) {
     console.error("Dashboard Stats Error:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to fetch academic statistics"
+      message: "Failed to fetch academic statistics",
     });
   }
 };
 
-// fetching the data for the admin dashboard like regulation + branch + semester wise fillteration of a students 
+// fetching the data for the admin dashboard like regulation + branch + semester wise fillteration of a students
 
 // ===== Helper function =====
 function buildStudentMatch({ regulation, branch, semester }) {
   const match = {
     role: "student",
-    academicStatus: "ACTIVE"
+    academicStatus: "ACTIVE",
   };
 
   if (regulation) match.regulation = regulation;
@@ -347,7 +255,7 @@ exports.getAcademicAnalyticsTable = async (req, res) => {
     const studentMatch = buildStudentMatch({
       regulation,
       branch,
-      semester
+      semester,
     });
 
     const data = await User.aggregate([
@@ -360,8 +268,8 @@ exports.getAcademicAnalyticsTable = async (req, res) => {
           from: "marks",
           localField: "_id",
           foreignField: "student",
-          as: "marks"
-        }
+          as: "marks",
+        },
       },
 
       // 3️⃣ Join Attendance
@@ -370,8 +278,8 @@ exports.getAcademicAnalyticsTable = async (req, res) => {
           from: "attendances",
           localField: "_id",
           foreignField: "student",
-          as: "attendance"
-        }
+          as: "attendance",
+        },
       },
 
       // 4️⃣ Flatten for calculations
@@ -386,9 +294,9 @@ exports.getAcademicAnalyticsTable = async (req, res) => {
               $filter: {
                 input: "$marks",
                 as: "m",
-                cond: { $eq: ["$$m.result", "PASS"] }
-              }
-            }
+                cond: { $eq: ["$$m.result", "PASS"] },
+              },
+            },
           },
 
           totalMarks: { $size: "$marks" },
@@ -398,13 +306,13 @@ exports.getAcademicAnalyticsTable = async (req, res) => {
               $filter: {
                 input: "$attendance",
                 as: "a",
-                cond: { $eq: ["$$a.status", "PRESENT"] }
-              }
-            }
+                cond: { $eq: ["$$a.status", "PRESENT"] },
+              },
+            },
           },
 
-          totalAttendance: { $size: "$attendance" }
-        }
+          totalAttendance: { $size: "$attendance" },
+        },
       },
 
       // 5️⃣ Group for table rows
@@ -413,13 +321,13 @@ exports.getAcademicAnalyticsTable = async (req, res) => {
           _id: {
             regulation: "$regulation",
             branch: "$branch",
-            semester: "$semester"
+            semester: "$semester",
           },
           passCount: { $sum: "$passCount" },
           totalMarks: { $sum: "$totalMarks" },
           presentCount: { $sum: "$presentCount" },
-          totalAttendance: { $sum: "$totalAttendance" }
-        }
+          totalAttendance: { $sum: "$totalAttendance" },
+        },
       },
 
       // 6️⃣ Compute percentages
@@ -439,13 +347,13 @@ exports.getAcademicAnalyticsTable = async (req, res) => {
                   {
                     $multiply: [
                       { $divide: ["$passCount", "$totalMarks"] },
-                      100
-                    ]
+                      100,
+                    ],
                   },
-                  2
-                ]
-              }
-            ]
+                  2,
+                ],
+              },
+            ],
           },
 
           avgAttendancePercentage: {
@@ -457,20 +365,17 @@ exports.getAcademicAnalyticsTable = async (req, res) => {
                   {
                     $multiply: [
                       {
-                        $divide: [
-                          "$presentCount",
-                          "$totalAttendance"
-                        ]
+                        $divide: ["$presentCount", "$totalAttendance"],
                       },
-                      100
-                    ]
+                      100,
+                    ],
                   },
-                  2
-                ]
-              }
-            ]
-          }
-        }
+                  2,
+                ],
+              },
+            ],
+          },
+        },
       },
 
       // 7️⃣ Sort for clean tables
@@ -478,23 +383,21 @@ exports.getAcademicAnalyticsTable = async (req, res) => {
         $sort: {
           regulation: 1,
           branch: 1,
-          semester: 1
-        }
-      }
+          semester: 1,
+        },
+      },
     ]);
 
     res.status(200).json({
       success: true,
       count: data.length,
-      data
+      data,
     });
   } catch (err) {
     console.error("Academic Analytics Error:", err);
     res.status(500).json({
       success: false,
-      message: "Failed to fetch academic analytics"
+      message: "Failed to fetch academic analytics",
     });
   }
 };
-
-
