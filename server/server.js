@@ -49,12 +49,12 @@ app.use("/data",require("./routes/DeleteAndGetDataRoutes"));
 
 // const path = require("path");
 // Serve static files
-// app.use(express.static(path.join(__dirname, "../client/build")));
+app.use(express.static(path.join(__dirname, "../client/build")));
 
 // Catch all handler (React routing support)
-// app.use("*",(req, res) => {
-//   res.sendFile(path.join(__dirname, "../client/build/index.html"));
-// });
+app.use("*",(req, res) => {
+  res.sendFile(path.join(__dirname, "../client/build/index.html"));
+});
 
 
 
