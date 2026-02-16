@@ -47,15 +47,6 @@ app.use("/data",require("./routes/DeleteAndGetDataRoutes"));
 
 // deploying 
 
-// const path = require("path");
-// // Serve static files
-// app.use(express.static(path.join(__dirname, "../client/build")));
-
-// // Catch all handler (React routing support)
-// app.use("*",(req, res) => {
-//   res.sendFile(path.join(__dirname, "../client/build/index.html"));
-// });
-
 
 
 const path = require("path");
