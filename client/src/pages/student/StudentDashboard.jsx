@@ -127,10 +127,11 @@ export default function StudentDashboard() {
   //   navigate("/login", { replace: true });
   // };
 
+  
+  console.log(auth)
+  console.log(data)
   if (!data) return <p>Loading dashboard...</p>;
 
-  console.log(auth.accessToken)
-  console.log(data.rollNo)
 
   // console.log(subjects)
   return (
