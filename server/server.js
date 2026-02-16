@@ -47,16 +47,26 @@ app.use("/data",require("./routes/DeleteAndGetDataRoutes"));
 
 // deploying 
 
+// const path = require("path");
+// // Serve static files
+// app.use(express.static(path.join(__dirname, "../client/build")));
+
+// // Catch all handler (React routing support)
+// app.use("*",(req, res) => {
+//   res.sendFile(path.join(__dirname, "../client/build/index.html"));
+// });
+
+
+
 const path = require("path");
-// Serve static files
-app.use(express.static(path.join(__dirname, "../client/build")));
 
-// Catch all handler (React routing support)
-app.use("*",(req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build/index.html"));
-});
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/build")));
 
-
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../client/build/index.html"));
+  });
+}
 
 
 
