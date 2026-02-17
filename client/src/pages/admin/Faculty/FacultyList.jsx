@@ -39,61 +39,6 @@ export default function FacultyList() {
 
   if (loading) return <p>Loading faculty...</p>;
 
-  // return (
-  //   <div style={{ padding: "20px" }}>
-  //     <h2>Faculty List</h2>
-
-  //     {faculty.length === 0 ? (
-  //       <p>No faculty found</p>
-  //     ) : (
-  //       <table border="1" cellPadding="10" cellSpacing="0" width="100%">
-  //         <thead>
-  //           <tr>
-  //             <th>S.No</th>
-  //             <th>Faculty ID</th>
-  //             <th>Name</th>
-  //             <th>Email</th>
-  //             <th>Phone</th>
-  //             <th>Department</th>
-  //             <th>Designation</th>
-  //             <th>Action</th>
-  //           </tr>
-  //         </thead>
-
-  //         <tbody>
-  //           {faculty.map((f, index) => (
-  //             <tr key={f._id}>
-  //               <td>{index + 1}</td>
-  //               <td>{f.facultyId}</td>
-  //               <td>{f.name}</td>
-  //               <td>{f.email}</td>
-  //               <td>{f.phone}</td>
-  //               <td>{f.department}</td>
-  //               <td>{f.designation}</td>
-  //               <td>
-  //                 <button
-  //                   onClick={() => handleDelete(f._id)}
-  //                   style={{
-  //                     backgroundColor: "red",
-  //                     color: "white",
-  //                     border: "none",
-  //                     padding: "6px 10px",
-  //                     cursor: "pointer"
-  //                   }}
-  //                 >
-  //                   Delete
-  //                 </button>
-  //               </td>
-  //             </tr>
-  //           ))}
-  //         </tbody>
-  //       </table>
-  //     )}
-  //   </div>
-  // );
-
-
-
   return (
     <div className="faculty-page">
       <h2 className="faculty-title">Faculty List</h2>

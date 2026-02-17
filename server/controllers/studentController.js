@@ -163,11 +163,20 @@ exports.getStudentResult = async (req, res) => {
     }
 
     // ✅ 2️⃣ Fetch only required marks fields
+    // const marks = await Marks.find({
+    //   student: student._id,
+    //   semester: semNumber,
+    // })
+    //   .select("subjectCode subjectName credits grade gradePoint -_id")
+    //   .sort({ subjectCode: 1 })
+    //   .lean();
     const marks = await Marks.find({
       student: student._id,
       semester: semNumber,
     })
-      .select("subjectCode subjectName credits grade gradePoint -_id")
+      .select(
+        "subjectCode subjectName credits grade gradePoint internalMarks externalMarks totalMarks result",
+      )
       .sort({ subjectCode: 1 })
       .lean();
 
